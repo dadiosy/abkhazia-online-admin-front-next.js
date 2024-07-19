@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import DropBox from '../common/DropBox';
 import axios from "axios";
-import { API_BASE_URL } from '../../../../const/CustomConsts';
+import { API_BASE_URL } from '../../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 
 const DropZoneImage = ({ onChildData }) => {

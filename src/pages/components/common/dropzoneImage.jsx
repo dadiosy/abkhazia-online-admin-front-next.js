@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import DropBox from '../common/DropBox';
+import DropBox from './DropBox';
 import copy from 'clipboard-copy';
 import axios from "axios";
-import { API_BASE_URL } from '../../../../const/CustomConsts';
+import { API_BASE_URL } from '../../../const/CustomConsts';
 import Image from "next/image";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/button'

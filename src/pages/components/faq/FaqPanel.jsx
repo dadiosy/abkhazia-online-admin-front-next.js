@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'moment/locale/ru';
 import { TrashFill, HandThumbsDown, HandThumbsUp, Pen, Textarea } from 'react-bootstrap-icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
-import { API_BASE_URL, BtnActive, BtnActive14 } from '../../../../const/CustomConsts';
+import { API_BASE_URL, BtnActive, BtnActive14 } from '../../../const/CustomConsts';
 
 const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar, approve, active, handleChild }) => {
     const [isOpenEdit, setIsOpenEdit] = useState(false);
@@ -93,13 +93,13 @@ const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar, a
                         )}
                         {answers?.length != 0 && (
                             <button className="defaultButton14"
-                                onClick={() => { Router.push(`/admin/faq/${id}`) }}>
+                                onClick={() => { Router.push(`/faq/${id}`) }}>
                                 {(answers.length == 1) ? answers.length + ' ответ' : answers.length + ' ответов'}
                             </button>
                         )}
                         {answers?.length == 0 && (
                             <button className="defaultButton14"
-                                onClick={() => { Router.push(`/admin/faq/${id}`) }}>
+                                onClick={() => { Router.push(`/faq/${id}`) }}>
                                 Нет ответов
                             </button>
                         )}

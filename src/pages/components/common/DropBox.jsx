@@ -1,5 +1,5 @@
 import { useDropzone } from 'react-dropzone';
-import { BtnActive14 } from '../../../../const/CustomConsts';
+import { BtnActive14 } from '../../../const/CustomConsts';
 //https://github.com/Claradev32/Drag-and-drop-with-react-dropzone/blob/master/src/DropBox.js
 const DropBox = ({ onDrop }) => {
     const { getRootProps, getInputProps, acceptedFiles, open, }

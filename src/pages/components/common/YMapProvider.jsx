@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from "next/link";
 import { YMaps, Map, FullscreenControl, SearchControl, GeolocationControl } from "@pbe/react-yandex-maps";
 import { Button, Circle, Placemark, ZoomControl } from "@pbe/react-yandex-maps";
-import { defaultYMapX, defaultYMapY } from '../../../../const/CustomConsts';
+import { defaultYMapX, defaultYMapY } from '../../../const/CustomConsts';
 
 export default function YMapProvider({ mapX, mapY, onChildData }) {
   if (!mapX) mapX = defaultYMapX;

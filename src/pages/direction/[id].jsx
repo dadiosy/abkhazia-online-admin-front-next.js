@@ -1,289 +1,1019 @@
 'use client'
-import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
 import { NextSeo } from "next-seo";
-import Link from "next/link";
-import axios from "axios";
-import Router, { useRouter, } from 'next/router';
+import { useState, useEffect, useRef } from "react"
+import Router, { useRouter } from "next/router";
 import Image from "next/image";
-import { Image as ImageChak } from '@chakra-ui/react'
-import { ArrowRight } from 'react-bootstrap-icons';
-import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
+import NavBar from "../components/layout/NavBar";
+import Footer from "../components/layout/Footer";
+import Link from "next/link";
+import ActivePin from "../../../public/img/SVG/ActivePin";
+import InActivePin from "../../../public/img/SVG/InActivePin";
+import { API_BASE_URL, BtnActive, BtnMiniCss, normalInputCss } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
-import Scrollspy from 'react-scrollspy'
-import NavBar from "../../components/Layout/NavBar";
-import Footer from "../../components/Layout/Footer";
-import YMapProvider from "../../components/common/YMapProvider";
-import TeleBookPanel from "../../components/common/TeleBookPanel";
-import ImgDirectPanel from "../../components/common/ImgDirectPanel";
-import WeatherPanel from "../../components/weather/WeatherPanel"
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
-import LinkDetail from "../../components/common/LinkDetail";
-import SocialLink from "../../components/common/SocailLink";
-import { Helmet } from 'react-helmet';
-import { getMetaData } from "../../const/Apis";
-
-const scrollToSection = (e, id) => {
-  e.preventDefault();
-  const targetElement = document.getElementById(id);
-  if (targetElement) {
-    const offset = 94;
-    const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
-  }
-};
+import { ToastContainer, toast } from 'react-toastify';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
+import { Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, } from '@chakra-ui/react'
+import YMapProvider from "../components/common/YMapProvider";
+import DropzoneImage from '../components/common/dropzoneImage';
+import IconList from "../components/common/IconList"
 const DirectionDetailPage = () => {
-  const [metaData, setMetaData] = useState({});
-  const router = useRouter();
-  const [directionData, setDirectionData] = useState({});
-  const [directionRecent, setDirectionRecent] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [todayWeather, setTodayWeather] = useState([]);
-  const [isHovered, setIsHovered] = useState(false);
-  const detailId = router.query.id;
-  const getDirectionRecent = () => {
-    setLoading(true);
-    axios.get(API_BASE_URL + '/direction', { params: {} }
-    ).then((res) => {
-      setDirectionRecent(res.data.data);
-      setLoading(false);
-    }).catch((err) => {
-      console.log(err);
-    })
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [selContentId, setSelContentId] = useState(null);
+  const [userInfo, setUserInfo] = useState();
+  const [pageLocation, SetpageLocation] = useState(0);
+  const handlePClick = (id) => {
+    SetpageLocation(id);
   }
-
-  const getDirectionData = (id) => {
-    setLoading(true);
-    axios.get(API_BASE_URL + '/direction/' + id,
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenNew, setIsOpenNew] = useState(false);
+  const router = useRouter();
+  const detailId = router.query.id;
+  const [dataDetail, setDataDetail] = useState({
+    'name': '',
+    'title': '',
+    'description': '',
+    'heading': '',
+    'bgImg': '',
+    'uniqueLink': '',
+    'latitude': '',
+    'longitude': '',
+    'contents': [{
+      'question': '',
+      'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
+    }],
+    'images': [
+      // { "id": 3, "url": "test" },
+    ]
+  });
+  const [removeArray, setRemoveArray] = useState([]);
+  const getDataDetail = () => {
+    axios.get(API_BASE_URL + '/direction/' + detailId,
       {
-        id
+        // 'id': detailId
       }).then((res) => {
-        setDirectionData(res.data.data);
-        setTodayWeather(res.data.data.weathers);
-        setLoading(false);
+        setDataDetail(res.data.data);
       }).catch((err) => {
         console.log(err);
       });
   }
+  useEffect(() => {
+    var saveData = JSON.parse(localStorage?.saveData || null) || {};
+    setUserInfo(saveData.userInfo);
+    getDataDetail();
+  }, [detailId])
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (detailId > 0 && dataDetail.name == "") {
+        getDataDetail();
+        // window.location.reload();
+      }
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [dataDetail])
 
-  useEffect(() => {
-    getDirectionData(detailId);
-    getDirectionRecent();
-  }, [detailId]);
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash) {
-      const id = hash.substring(1); // Remove the '#' character
-      scrollToSection({ preventDefault: () => { } }, id);
+
+  const handleTextChange = (e) => {
+    setDataDetail({ ...dataDetail, [e.target.name]: e.target.value });
+  }
+  const handleArrayTextAreaChange = (e, ind) => {
+    if (ind >= 0) {
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((item, index) => {
+          if (index === ind) {
+            return { ...item, 'content': e.target.value };
+          }
+          return item;
+        })
+      });
     }
-    getMetaData({}).then(res => {
-      setMetaData(res.data.data.filter((ele) => ele.url === window.location.pathname)[0]);
-    }).catch(err => {
+  }
+  const handleArrayTextChange = (e, ind) => {
+    if (ind >= 0) {
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((item, index) => {
+          if (index === ind) {
+            return { ...item, 'question': e.target.value };
+          }
+          return item;
+        })
+      });
+    }
+  }
+  const handleAddContent = () => {
+    setDataDetail({
+      ...dataDetail,
+      contents: [
+        ...dataDetail.contents,
+        {
+          'question': '',
+          'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
+        }
+      ]
+    });
+  }
+  const handleDelete = () => {
+    axios.delete(API_BASE_URL + "/direction/" + detailId,
+      // { id: detailId },
+      { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+    ).then((res) => {
+      if (res.data.statusCode == 200) {
+        toast.success('Удалить успех');
+        Router.push('/direction');
+      }
+    }).catch((err) => {
+      if (err.response?.status == 401) {
+        toast.error("пожалуйста, войдите в систему");
+        Router.push('/auth/login');
+      }
       console.log(err);
     })
-  }, []);
+  }
+  const handleCreate = () => {
+    if (dataDetail.name == "") { toast.error('входное Название'); return; }
+    if (dataDetail.title == "") { toast.error('введите Заголовок'); return; }
+    if (dataDetail.description == "") { toast.error('входное Описание'); return; }
+    if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
+    if (dataDetail.uniqueLink == "") { toast.error('URL segment need'); return; }
+
+    if (dataDetail.latitude == "") { toast.error('ввод Широта'); return; }
+    if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
+    if (detailId != 'add') {
+      let direction1 = {
+        "title": dataDetail.title,
+        "description": dataDetail.description,
+        "heading": dataDetail.heading,
+        "bgImg": dataDetail.bgImg,
+        "uniqueLink": dataDetail.uniqueLink,
+        "longitude": dataDetail.longitude,
+        "latitude": dataDetail.latitude
+      };
+      let update1 = dataDetail.contents.filter((v) => v.id != null);
+      let new1 = dataDetail.contents.filter((v) => v.id == null);
+      let updateData = {
+        'direction': direction1,
+        'contents': {
+          // 'new': new1,
+          // 'update': update1,
+          // 'remove': removeArray
+        }
+      }
+      if (new1.length > 0) updateData.contents.new = new1;
+      if (update1.length > 0) updateData.contents.update = update1;
+      if (removeArray.length > 0) updateData.contents.remove = removeArray;
+
+      axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
+        { ...updateData }
+      ).then((res) => {
+        if (res.data.statusCode == 200) {
+          Router.push('/direction');
+          toast.success('Обновить успех');
+        }
+      }).catch((err) => {
+        if (err.response?.status == 401) {
+          toast.error("пожалуйста, войдите в систему");
+          Router.push('/auth/login');
+        }
+        console.log(err);
+      })
+    } else {
+      axios.post(API_BASE_URL + "/direction",
+        { ...dataDetail },
+        { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+      ).then((res) => {
+        if (res.data.statusCode == 400) toast.error(res.data.message);
+        if (res.data.statusCode == 200) {
+          toast.success('Создать успех');
+          Router.push('/direction');
+        }
+      }).catch((err) => {
+        if (err.response?.status == 401) {
+          toast.error("пожалуйста, войдите в систему");
+          Router.push('/auth/login');
+        }
+        console.log(err);
+      })
+    }
+  }
+
+  const handleDelClick = () => {
+    setIsOpenDelete(false);
+    handleContentsDel();
+  }
+  const handleContentsDel = () => {
+    let tempArray = removeArray;
+    if (selContentId) tempArray.push(selContentId);
+    setRemoveArray([...tempArray])
+    if (dataDetail.contents.length > 1) {
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.filter((v, index) => v.id !== selContentId)
+      });
+    }
+  }
+  const getXY = (XY) => {
+    setDataDetail({ ...dataDetail, ['latitude']: XY[0], ['longitude']: XY[1] });
+  }
+  const [modalTitle, setModalTitle] = useState('');
+  const [isOpenAddText, setIsOpenAddText] = useState(false);
+  const [addText, setAddText] = useState("");
+  const [selText, setSelText] = useState('');
+  const textareaRefs = Array(10).fill(null).map(() => useRef(null));
+  const [selectTextAreaIndex, setSelectTextAreaIndex] = useState(0);
+  const [tagName, setTagName] = useState('');
+  const [isOpenAddBooking, setIsOpenAddBooking] = useState(false);
+  const [bookingText, setBookingText] = useState(Array(8).fill(''));
+  const handleBookingText = (e, ind) => {
+    const tempBookingText = [...bookingText];
+    tempBookingText[ind] = e.target.value;
+    setBookingText(tempBookingText);
+  }
+  const handleInsertText = () => {
+    const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex]?.current;
+    const contentText = textareaRefs[selectTextAreaIndex].current.value;
+    // const selText = contentText.substring(selectionStart, selectionEnd);
+    const leftText = contentText.substring(0, selectionStart);
+    const rightText = contentText.substring(selectionEnd, contentText.length);
+
+    if (tagName == 'a') {
+      if (addText == "") { toast.error('вставьте адрес ссылки'); return; }
+      if (selText == "") { toast.error('вставить текст'); return; }
+      const addContent = `<${tagName} href='https://${addText}' target='_blank'>${selText}</${tagName}>`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+    } else if (tagName == 'hotel') {
+      for (let fori = 0; fori < 8; fori++) if (bookingText[fori] == "") { toast.error('вставить текст'); return; }
+      // https://daisa.ru/api/direction/1716791093337.png
+      // https://daisa.ru/api/direction/1716791111323.png
+
+      const addContent = `\n<!-- -----------Hotel Start-------------- -->\n
+<div style="display: flex; gap:20px; margin-bottom: 10px; overflow: auto; max-width: 100vw;">
+    <div style="min-width:339px">
+        <img src="${bookingText[0]}" style="width: 100%; height: auto; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; margin-bottom: 0px;">
+        <div style="min-width: 327px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding: 10px;border-color: #c0c0c0; border-width: thin; border-style: solid;">
+            <div style="display: flex; position: relative;">
+                <div style="font-size: 20px; width: 75%; font-weight: 600; line-height: 28px;">
+                    ${bookingText[1]}
+                </div>
+                <div style="font-size:18px; width: 25%; text-align: right; padding-top: 4px; padding-right: 12px; color: white; z-index: 10">
+                    9.6
+                </div>
+                <img src="/img/vector.png" style="position: absolute; right:2px; top: -6px;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: space-between; margin-top:10px">
+                <div style="width: 100%;">
+                    <div style="font-size: 24px; font-weight: bold;">
+                        ${bookingText[2]}
+                    </div>
+                    <div class='flex' style="font-size: 14px; align-items: center; color: #919494;">
+                        ${bookingText[3]}
+                    </div>
+                </div>
+                <button onclick="window.open('#','_blank')" style="width: 70%;" class='detailButtonColor'>Выбрать</button>
+            </div>
+        </div>
+    </div>
+    <div style="min-width:339px">
+        <img src="${bookingText[4]}" style="width: 100%; height: auto; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; margin-bottom: 0px;">
+        <div style="min-width: 327px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding: 10px;border-color: #c0c0c0; border-width: thin; border-style: solid;">
+            <div style="display: flex; position: relative;">
+                <div style="font-size: 20px; width: 75%; font-weight: 600; line-height: 28px;">
+                    ${bookingText[5]}
+                </div>
+                <div style="font-size:18px; width: 25%; text-align: right; padding-top: 4px; padding-right: 12px; color: white; z-index: 10">
+                    9.6
+                </div>
+                <img src="/img/vector.png" style="position: absolute; right:2px; top: -6px;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: space-between; margin-top:10px">
+                <div style="width: 100%;">
+                    <div style="font-size: 24px; font-weight: bold;">
+                        ${bookingText[6]}
+                    </div>
+                    <div class='flex' style="font-size: 14px; align-items: center; color: #919494;">
+                        ${bookingText[7]}
+                    </div>
+                </div>
+                <button onclick="window.open('#','_blank')" style="width: 70%;" class='detailButtonColor'>Выбрать</button>
+            </div>
+        </div>
+    </div>
+</div>
+      \n<!-- -----------Hotel End-------------- -->\n\n`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+
+    } else if (tagName == 'booking') {
+      for (let fori = 0; fori < 6; fori++) if (bookingText[fori] == "") { toast.error('вставить текст'); return; }
+      const addContent = `\n<!-- -----------Booking Start-------------- -->\n
+      <div style="display: flex; gap:10px; margin-bottom: 10px; overflow: auto; max-width: 100vw;">
+    <div style="min-width: 327px; border-radius: 10px; padding: 18px;border-color: #c0c0c0; border-width: thin; border-style: solid;">
+        <div style="display: flex; position: relative;">
+          <div style="font-size: 18px; width: 75%; font-weight: 600; line-height: 28px;">
+            ${bookingText[0]}
+          </div>
+          <div style="font-size:18px; width: 25%; text-align: right; padding-top: 4px; padding-right: 12px; color: white; z-index: 10">
+            9.6
+          </div>
+          <img src="/img/vector.png" style="position: absolute; right:2px; top: -6px;">
+        </div>
+        <div style="font-size: 16px; padding-top: 16px; ">
+          ⏳ ${bookingText[1]}
+        </div>
+        <div class='flex' style="font-size: 16px; align-items: center;">
+           <img src='/img/man.png' style="width: 20px;height: 26px;margin-left: -3px;"> ${bookingText[2]}
+        </div>
+        <div style="display: flex;justify-content: space-between; gap: 10px;">
+          <button onclick="window.open('#','_blank')" style="width: 50%;" class='detailButton'>Отзывы</button>
+          <button onclick="window.open('/booking','_blank')" style="width: 50%;" class='detailButtonColor'>Забронировать</button>
+        </div>
+    </div>
+
+
+    <div style="min-width: 327px; border-radius: 10px; padding: 18px;border-color: #c0c0c0; border-width: thin; border-style: solid;">
+        <div style="display: flex; position: relative;">
+          <div style="font-size: 18px; width: 75%; font-weight: 600; line-height: 28px;">
+            ${bookingText[3]}
+          </div>
+          <div style="font-size:18px; width: 25%; text-align: right; padding-top: 4px; padding-right: 12px; color: white; z-index: 10">
+            9.6
+          </div>
+          <img src="/img/vector.png" style="position: absolute; right:2px; top: -6px;">
+        </div>
+        <div style="font-size: 16px; padding-top: 16px; ">
+          ⏳ ${bookingText[4]}
+        </div>
+        <div class='flex' style="font-size: 16px; align-items: center;">
+           <img src='/img/man.png' style="width: 20px;height: 26px;margin-left: -3px;"> ${bookingText[5]}
+        </div>
+        <div style="display: flex;justify-content: space-evenly; gap: 10px;">
+          <button onclick="window.open('#','_blank')" style="width: 50%;" class='detailButton'>Отзывы</button>
+          <button onclick="window.open('/booking','_blank')" style="width: 50%;" class='detailButtonColor'>Забронировать</button>
+        </div>
+    </div>
+</div>
+      \n<!-- -----------Booking End-------------- -->\n\n`;
+
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+
+    } else if (tagName == 'button') {
+      if (addText == "") { toast.error('вставьте адрес ссылки'); return; }
+      if (selText == "") { toast.error('вставить текст'); return; }
+      const addContent = `\n<!-- -----------Button Start-------------- -->\n<button onclick="window.open('https://${addText}','_blank')"  class='detailButton'>${selText}</button>\n<!-- -----------Button End-------------- -->\n\n`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+    } else if (tagName == 'img') {
+      if (addText == "") { toast.error('вставьте адрес ссылки'); return; }
+      const addContent = `\n<!-- -----------Image Start-------------- -->\n<${tagName} src='${addText}' style='height: auto;width: 100%'>\n<!-- -----------Image End-------------- -->\n\n`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + selText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+    }
+    else if (tagName == 'hint') {
+      if (addText == "") { toast.error('Вставить текст'); return; }
+      const addContent = `\n<!-- -----------Hint Start-------------- -->\n
+      <div class="flex flex-row gap-6 detailHint text-base md:text-lg"><img src='/img/hint.png'>${addText}</div>\n
+      <!-- -----------Hint End-------------- -->\n\n`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + selText + rightText };
+          }
+          return v;
+        })
+      });
+    } else if (tagName == 'li') {
+      if (addText == "") { toast.error('insert li Text'); return; }
+      const addContent = `\n<!-- -----------li Start-------------- -->\n
+      <div style="padding: 8px 0 8px 0;">
+      <div style="display: flex; align-items: center;">
+        <div style="background-color: #FF6432; width: 16px; height: 16px; border-radius: 16px; margin-right:10px;"></div>
+        <div>${addText}</div>
+      </div>
+    </div>
+      <!-- -----------li End-------------- -->\n\n`;
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + selText + rightText };
+          }
+          return v;
+        })
+      });
+    } else if (tagName == 'h4' || tagName == 'h5') {
+      if (selText == "") { toast.error('вставить текст'); return; }
+      let addContent = "";
+      if (addText == "") addContent = `<${tagName}>${selText}</${tagName}>`;
+      else addContent = `<${tagName}><Image src="${addText}"/>${selText}</${tagName}>`;
+
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+    } else { //bold, p, 
+      if (selText == "") { toast.error('вставить текст'); return; }
+      const addContent = '<' + tagName + '>' + selText + '</' + tagName + '>';
+      setDataDetail({
+        ...dataDetail,
+        contents: dataDetail.contents.map((v, i) => {
+          if (i === selectTextAreaIndex) {
+            return { ...v, 'content': leftText + addContent + rightText };
+          }
+          return v;
+        })
+      });
+    }
+    setAddText('');
+    setSelText('');
+    setBookingText(Array(8).fill(''))
+    setIsOpenAddText(false);
+    setIsOpenAddBooking(false);
+  };
+
   return (
     <>
-      {/* <NextSeo title={`Направления-${directionData.title}`} /> */}
-      <NextSeo title={metaData?.title} description={metaData?.description} />
-      <Helmet>
-        {/* <title>{metaData?.title}</title>
-            <meta name="description" content={metaData?.description} /> */}
-        <meta name="keywords" content={metaData?.keyword} />
-      </Helmet>
+      <NextSeo title="Главная" />
       <NavBar />
-      {directionData && (
-        <div className="bg-white mt-[60px] md:mt-[94px]">
+
+      {dataDetail ? (
+        <div className="flex flex-col container mx-auto max-w-[1440px] mt-[60px] md:mt-[94px]">
           {loading ? (<div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div>) : null}
+          <div className="flex flex-row justify-center gap-5 px-4 md:px-[8.333333333%] ">
+            <div className="flex w-1/3">
+              <div className="flex justify-center">
+                <div className="flex flex-col justify-center items-center gap-2">
 
-          <div className="relative w-full">
-            {directionData.bgImg && (
-              <ImageChak src={directionData.bgImg} className="w-full h-[280px] md:h-[800px] z-50" objectFit="cover" />
-            )}
-            <div className="bg-gradient-to-b from-[#000] absolute bottom-0 h-3/5 md:h-2/5 w-full rotate-180"></div>
+                  <IconList />
 
-            <div className="absolute bottom-0 lg:bottom-15 lg:px-[8.33333333%] lg:py-[60px] lg:space-y-8 px-4 py-8 space-y-2">
-              <LinkDetail indexName={'Направления'} indexLink={"/direction"} detailName={directionData.name} />
-              <h1 className="!text-white md:leading-[65px] leading-[34px] !text-[30px] md:!text-[62px]">
-                {directionData.title}
-              </h1>
-            </div>
-
-          </div>
-          <div className="flex flex-col justify-center items-center mx-auto max-w-[1440px]">
-            <div className="pl-2 md:px-4 max-w-[1200px]">
-              <div className="flex flex-col lg:flex-row-reverse w-full">
-                <div className="w-full lg:w-[694px] relative">
-                  <div className="md:pl-12 py-3 md:py-10 space-y-6 md:space-y-14 sticky top-20">
-                    <div className="hidden md:flex">
-                      <SocialLink />
-                    </div>
-                    <div className="flex flex-col gap-3 md:gap-6">
-                      <h4 className="text-[20px] md:text-[30px] ">
-                        Оглавление
-                      </h4>
-
-                      <Scrollspy items={['section-0', 'section-1', 'section-2', 'section-3', 'section-4', 'section-5', 'section-6', 'section-7', 'section-8', 'section-9', 'section-10', 'section-11', 'section-12', 'section-13', 'section-14', 'section-15', 'section-16', 'section-17', 'section-18', 'section-19', 'section-20']}
-                        currentClassName="is-current">
-                        {directionData?.contents?.map((v, i) => (
-                          <li key={i} className="flex items-center gap-3 py-2 !text-base md:!text-md">
-                            <div className="w-3 h-3 md:!w-4 md:!h-4 bg-red-300 rounded-full">
-                              <span className="w-4 text-transparent">no</span>
-                            </div>
-                            <Link href={`#section-${i}`}>
-                              <span onClick={(e) => scrollToSection(e, `section-${i}`)} className="cursor-pointer hover:font-semibold">
-                                {v.question}
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
-                      </Scrollspy>
-
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-xl md:text-2xl font-semibold leading-7 font-GolosText">
-                        Предлагаем в Цандрыпше:
-                      </p>
-                      <div className="grid grid-cols-3 divide-x items-center justify-center text-center mt-3 md:mt-5">
-                        <div onClick={() => { Router.push('/') }}>
-                          <div className="hidden md:flex justify-center">
-                            <Image src='/img/SVG/House.svg' width={48} height={48} objectFit="cover" />
-                          </div>
-                          <div className="flex md:hidden justify-center">
-                            <Image src='/img/SVG/House.svg' width={36} height={36} objectFit="cover" />
-                          </div>
-                        </div>
-                        <div onClick={() => { Router.push('/') }}>
-                          <div className="hidden md:flex justify-center">
-                            <Image src='/img/SVG/Routing.svg' width={48} height={48} objectFit="cover" />
-                          </div>
-                          <div className="flex md:hidden justify-center">
-                            <Image src='/img/SVG/Routing.svg' width={36} height={36} objectFit="cover" />
-                          </div>
-                        </div>
-                        <div onClick={() => { Router.push('/') }}>
-                          <div className="hidden md:flex justify-center">
-                            <Image src='/img/SVG/Transfer.svg' width={48} height={48} />
-                          </div>
-                          <div className="cursor-pointer flex md:hidden justify-center">
-                            <Image src='/img/SVG/Transfer.svg' width={36} height={36} />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 bg-[#FFF8ED] md:bg-white md:p-0">
-                        <div className="flex flex-col justify-center items-center space-y-1">
-                          <p className="text-base md:text-lg text-center font-extrabold">
-                            Отели
-                          </p>
-                          <p className="text-sm md:text-base text-center font-medium text-[#FF6432]">
-                            Выбрать
-                          </p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center space-y-1">
-                          <p className="text-center text-base md:text-lg font-extrabold">
-                            Экскурсии
-                          </p>
-                          <p className="text-center text-base font-medium text-[#FF6432]">
-                            Забронировать
-                          </p>
-                        </div>
-                        <div className="flex flex-col justify-center items-center space-y-1">
-                          <p className="text-center text-base md:text-lg font-extrabold">
-                            Трансфер
-                          </p>
-                          <p className="text-center text-sm md:text-base font-medium text-[#FF6432]">
-                            Заказать
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                  <div className='justify-center items-center'>
+                    {dataDetail.bgImg ? (
+                      <Image src={dataDetail.bgImg} width={300} height={180} className='object-cover rounded-md shadow-xl' />
+                    ) : null}
                   </div>
-                </div>
-
-                <div className="w-full">
-                  <div className="py-3 md:py-10 space-y-4">
-                    <div className="text-base md:text-lg xl:text-lg font-medium text-[#292D32] font-Manrop detail-custom-css">
-                      <p>{directionData.description} </p>
-                    </div>
-                    {(todayWeather.length > 0) && (
-                      <WeatherPanel wData={todayWeather} id={detailId} />
-                    )}
-                  </div>
-                  {directionData.contents && (
-                    <YMapProvider className="w-full" mapX={directionData.latitude} mapY={directionData.longitude} />
-                  )}
-                  {directionData?.contents?.map((v, i, arr) => (
-                    <div key={i} className="py-2 md:py-4 space-y-2 md:space-y-10" id={v.id}>
-                      <div className="text-2xl md:text-3xl xl:text-[44px] xl:leading-[52.8px] font-bold">
-                        <section id={`section-${i}`}>
-                          <h3 className="xl:leading-[48.2px] !text-[24px] md:!text-[44px]" dangerouslySetInnerHTML={{ __html: v.question }} />
-                        </section>
-                      </div>
-                      <div className="space-y-3 md:space-y-8">
-                        <div className="text-base md:text-lg font-medium detail-custom-css font-Manrop">
-                          <div dangerouslySetInnerHTML={{ __html: v.content }} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div >
-                    <button className={`${BtnActive}`}
-                      onClick={() => { Router.push('https://AllHotel.com') }}
-                      onMouseEnter={() => { setIsHovered(true); }}
-                      onMouseLeave={() => { setIsHovered(false); }}
-                    >
-                      Все отели в цандрыпшэ
-                      <ArrowRight color={isHovered ? 'white' : '#FF6432'} />
-                    </button>
-                  </div>
-                  <div className="py-4 md:py-10 space-y-4 font-Manrop">
-                    <div className="flex justify-center">
-                      <p className="text-[44px] md:text-5xl xl:text-6xl font-normal text-[#FF6432]">
-                        ***
-                      </p>
-                    </div>
-                    <p className="text-base md:text-lg font-medium pr-3">
-                      {directionData?.heading ? directionData.heading : null}
-                    </p>
-                    <div className="flex md:hidden justify-center  gap-4">
-                      <SocialLink />
-                    </div>
-                  </div>
+                  <DropzoneImage pathStr="direction" />
                 </div>
               </div>
             </div>
-          </div>
-        </div >
-      )}
 
-      {/* Telegram */}
-      < TeleBookPanel />
+            <div className="flex flex-col w-2/3">
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold">Название:</div>
+                  <input autoFocus name="name" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.name} />
+                </div>
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold">Заголовок:</div>
+                  <input name="title" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.title} />
+                </div>
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold">Описание:</div>
+                  {/* <input name="description" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.description} /> */}
+                  <textarea className="border border-gray-200 shadow-md p-2 w-full text-md rounded-lg" placeholder="" rows={2} cols={40}
+                    name="description"
+                    value={dataDetail.description}
+                    onChange={handleTextChange}
+                  />
+                </div>
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold">Заключение:</div>
+                  <input name="heading" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.heading} />
+                </div>
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold leading-3">Фоновое изображение:</div>
+                  <input name="bgImg" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.bgImg} />
+                </div>
+                <div className="flex flex-row">
+                  <div className="my-2 mx-5 w-32 font-bold">Unique URL Segment:</div>
+                  <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
+                </div>
+                <div className="flex flex-row justify-between">
+                  <div className="flex flex-row">
+                    <div className="my-2 mx-5 w-32 font-bold">Широта:</div>
+                    <input name="latitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.latitude} />
+                  </div>
+                  <div className="flex flex-row  w-1/2">
+                    <div className="my-2 mx-5 w-32 font-bold">Долгота:</div>
+                    <input name="longitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.longitude} />
+                  </div>
+                </div>
 
-      {/* Other Destinations */}
-      {directionRecent ? (
-        <div className="bg-white" >
-          <div className="flex flex-col container mx-auto max-w-[1440px] ">
-            <div className="px-4 py-4 md:py-[60px] space-y-4 md:space-y-10">
-              <p className="text-2xl md:text-3xl xl:text-[51px] font-bold">
-                Другие Направления в Абхазии
-              </p>
-              <ImgDirectPanel data={directionRecent} link={"/direction/"} />
+                <div>
+                  <YMapProvider className="rounded-xl" mapX={dataDetail?.latitude} mapY={dataDetail?.longitude} onChildData={getXY} />
+                </div>
+                <div className="z-10">
+                  {(dataDetail.contents?.length > 0) && (
+                    <Accordion allowToggle>
+                      {dataDetail.contents?.map((v, i) => (
+                        <AccordionItem key={i} >
+                          <AccordionButton>
+                            <Box as='span' flex='1' textAlign='left' className="font-bold flex flex-row justify-between h-[40px]">
+                              <input id="name" name="name" value={v.question}
+                                className="text-lg px-2 border border-red-200 rounded-sm shadow-lg w-4/5"
+                                onChange={(e) => handleArrayTextChange(e, i)}
+                                onClick={(e) => { e.stopPropagation(); }}
+                              />
+                              <div className="mr-5 w-10 bg-red-100 hover:bg-red-300 text-center rounded-full hover:shadow-md"
+                                onClick={(e) => { e.stopPropagation(); setSelContentId(v.id); setIsOpenDelete(true); }}
+                              ><span className="flex justify-center mt-2">X</span></div>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                          <AccordionPanel pb={4}>
+
+
+                            <div className="flex flex-row justify-between pb-3">
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('вставить текст');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('p');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Текст</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить жирный текст');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('b');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Жирный</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст тега h4');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex]?.current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('h4');
+                                  setIsOpenAddText(true);
+                                }}>
+                                h4</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст тега h5');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('h5');
+                                  setIsOpenAddText(true);
+                                }}>
+                                h5</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст списка');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('li');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Список</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('вставьте адрес ссылки');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('a');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Ссылка</button>
+                            </div>
+
+                            <div className="flex flex-row justify-between pb-3">
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить адрес ссылки на изображение : https://daisa.ru/api/direction/1716791111323.png');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('img');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Картинка</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст подсказки');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('hint');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Подсказка</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст кнопки');
+                                  const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
+                                  const contentText = textareaRefs[selectTextAreaIndex].current.value;
+                                  const selText = contentText.substring(selectionStart, selectionEnd);
+                                  setSelText(selText);
+                                  setTagName('button');
+                                  setIsOpenAddText(true);
+                                }}>
+                                Кнопка</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст бронирования');
+                                  setTagName('booking');
+                                  setIsOpenAddBooking(true);
+                                }}>
+                                Бронирование</button>
+                              <button className={BtnMiniCss}
+                                onClick={() => {
+                                  setSelectTextAreaIndex(i);
+                                  setModalTitle('Вставить текст отеля');
+                                  setTagName('hotel');
+                                  setIsOpenAddBooking(true);
+                                }}>
+                                Введение в отель</button>
+                            </div>
+
+                            <textarea className="border border-gray-200 shadow-md p-2 w-full text-md rounded-lg overflow-x-auto" placeholder="" wrap="off" rows={10} cols={40}
+                              ref={textareaRefs[i]}
+                              id={i}
+                              value={v.content}
+                              onChange={(e) => { handleArrayTextAreaChange(e, i) }}
+                            />
+
+                            <div className="text-[20px] detail-custom-css border-2 rounded-md p-2 shadow-md h-[300px] overflow-y-auto">
+                              <div dangerouslySetInnerHTML={{ __html: v.content }} className="bg-gray-200" />
+                            </div>
+
+                          </AccordionPanel>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-center mt-2">
+                <button className={BtnActive} onClick={handleAddContent}>Добавить элемент</button>
+              </div>
             </div>
           </div>
+          <div className="flex justify-center gap-x-10 my-10">
+
+            <button className={BtnActive}
+              onClick={() => { Router.push('/direction') }}>
+              Назад</button>
+
+            <button className={BtnActive}
+              onClick={handleCreate}>
+              {detailId ? 'Сохранить' : 'Создавать'}
+            </button>
+
+            <button className={BtnActive}
+              onClick={() => { setIsOpen(true) }}>
+              Превью</button>
+
+            <button className={BtnActive}
+              onClick={() => { setIsOpenNew(true) }}>
+              Удалить</button>
+          </div>
+
+          <Modal isOpen={isOpenAddBooking} onClose={() => { setIsOpenAddBooking(false) }} size="3xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="bg-[#FFF8ED]">{modalTitle}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody className="bg-[#FFF8ED]">
+                {tagName == 'hotel' && (
+                  <div className="flex flex-row gap-5">
+                    <div className="flex flex-col w-1/2 gap-4 border border-gray-600 p-4 rounded-md">
+                      <input autoFocus className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Адрес ссылки на картинку"
+                        value={bookingText[0]}
+                        onChange={(e) => { handleBookingText(e, 0) }}
+                      />
+                      <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Гостевой дом В Тихой Гавани"
+                        value={bookingText[1]}
+                        onChange={(e) => { handleBookingText(e, 1) }}
+                      />
+                      <div className="flex gap-4">
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="1500₽"
+                          value={bookingText[2]}
+                          onChange={(e) => { handleBookingText(e, 2) }}
+                        />
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="за ночь для 2 гостей"
+                          value={bookingText[3]}
+                          onChange={(e) => { handleBookingText(e, 3) }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col w-1/2 gap-4 border border-gray-600 p-4 rounded-md">
+                      <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Адрес ссылки на картинку"
+                        value={bookingText[4]}
+                        onChange={(e) => { handleBookingText(e, 4) }}
+                      />
+                      <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Гостевой дом В Тихой Гавани"
+                        value={bookingText[5]}
+                        onChange={(e) => { handleBookingText(e, 5) }}
+                      />
+                      <div className="flex gap-4">
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="1500₽"
+                          value={bookingText[6]}
+                          onChange={(e) => { handleBookingText(e, 6) }}
+                        />
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="за ночь для 2 гостей"
+                          value={bookingText[7]}
+                          onChange={(e) => { handleBookingText(e, 7) }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {tagName == 'booking' && (
+                  <div className="flex flex-row gap-5">
+                    <div className="flex flex-col w-1/2 gap-4 border border-gray-600 p-4 rounded-md">
+                      <input autoFocus className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Экскурсия в Цандрипшский храм"
+                        value={bookingText[0]}
+                        onChange={(e) => { handleBookingText(e, 0) }}
+                      />
+                      <div className="flex gap-4">
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="2 часа"
+                          value={bookingText[1]}
+                          onChange={(e) => { handleBookingText(e, 1) }}
+                        />
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="Пешком"
+                          value={bookingText[2]}
+                          onChange={(e) => { handleBookingText(e, 2) }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col w-1/2 gap-4 border border-gray-600 p-4 rounded-md">
+                      <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                        placeholder="Экскурсия в Цандрипшский храм"
+                        value={bookingText[3]}
+                        onChange={(e) => { handleBookingText(e, 3) }}
+                      />
+                      <div className="flex gap-4">
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="2 часа"
+                          value={bookingText[4]}
+                          onChange={(e) => { handleBookingText(e, 4) }}
+                        />
+                        <input className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto"
+                          placeholder="Пешком"
+                          value={bookingText[5]}
+                          onChange={(e) => { handleBookingText(e, 5) }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter className="flex flex-row gap-10 bg-[#FFF8ED]">
+                <button className={BtnActive}
+                  onClick={() => { handleInsertText(); }}>
+                  OK
+                </button>
+                <button className={BtnActive}
+                  onClick={() => { setIsOpenAddBooking(false) }}>
+                  Отмена
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+
+          <Modal isOpen={isOpenAddText} onClose={() => { setIsOpenAddText(false) }} size="3xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="bg-[#FFF8ED]">{modalTitle}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody className="bg-[#FFF8ED]">
+                <div className="flex flex-col gap-2">
+                  {(tagName == 'a' || tagName == 'h4' || tagName == 'h5' || tagName == 'img' || tagName == 'button') && (
+                    <input name="addText" autoFocus className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto" placeholder="вставьте адрес ссылки" wrap="off" rows={2} cols={40}
+                      value={addText}
+                      onChange={(e) => { setAddText(e.target.value) }}
+                    />
+                  )}
+                  {(tagName == 'hint' || tagName == 'li') && (<input autoFocus name="addText" className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto" placeholder="Вставить текст" wrap="off" rows={2} cols={40}
+                    value={addText}
+                    onChange={(e) => { setAddText(e.target.value) }}
+                  />
+                  )}
+                  {(!(tagName == 'img' || tagName == 'hint' || tagName == 'li')) && (
+                    <textarea name="selText" autoFocus className="border border-gray-700 shadow-sm p-2 w-full text-md rounded-md overflow-x-auto" placeholder="вставить текст" wrap="off" rows={2} cols={40}
+                      value={selText}
+                      onChange={(e) => { setSelText(e.target.value) }}
+                    />
+                  )}
+                </div>
+              </ModalBody>
+              <ModalFooter className="flex flex-row gap-10 bg-[#FFF8ED]">
+                <button className={BtnActive}
+                  onClick={() => { handleInsertText(); }}>
+                  OK
+                </button>
+                <button className={BtnActive}
+                  onClick={() => { setIsOpenAddText(false) }}>
+                  Отмена
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Modal isOpen={isOpen} onClose={() => { setIsOpen(false) }} size="6xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>{dataDetail.name}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <div className="flex flex-row w-full gap-10 relative">
+                  <div className="w-full lg:w-[58%] bg-slate-100  rounded-xl">
+                    <div className="flex flex-col gap-5 m-5">
+                      <div className="relative">
+                        <Image src={dataDetail.bgImg} width={600} height={400} className="rounded-[10px]" />
+                        <div className="absolute bottom-10 left-5 text-2xl md:text-3xl xl:leading-[52.8px] font-bold text-white text-shadow-lg">
+                          {dataDetail.name + "-" + dataDetail.title}</div>
+                      </div>
+                      <div className="text-xl font-bold">{dataDetail.heading}</div>
+                      <div className="text-xl font-bold">{dataDetail.description}</div>
+                      {dataDetail?.contents?.map((v, i, arr) => (
+                        v.content != "" ? (
+                          <div key={i} className="py-4 md:py-10 space-y-3 md:space-y-14" id={v.id}>
+                            <div className="text-2xl md:text-3xl xl:leading-[52.8px] font-bold text-[20px]">
+                              <div dangerouslySetInnerHTML={{ __html: v.question }} />
+                            </div>
+                            <div className="space-y-3 md:space-y-8">
+                              <div className="text-[20px] detail-custom-css">
+                                <div dangerouslySetInnerHTML={{ __html: v.content }} />
+                              </div>
+                            </div>
+                          </div>
+                        ) : null
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-[42%]  sticky top-1 bg-slate-100 rounded-xl">
+                    <div className="flex flex-col gap-3 md:gap-6  m-5">
+                      <p className="text-xl md:text-2xl xl:text-3xl font-semibold">
+                        Оглавление
+                      </p>
+                      <ul className="flex flex-col detail-custom-css">
+                        {dataDetail?.contents?.map((v, i, arr) => (
+                          <li key={i} className="flex items-center gap-3 py-2">
+                            <div className="w-3 md:w-4 h-3 md:h-4">
+                              {(pageLocation == v.id) ? <ActivePin /> : <InActivePin />}
+                            </div>
+                            <Link href={`#${v.id}`}>
+                              <div className="cursor-pointer text-base md:text-md font-medium"
+                                onClick={() => handlePClick(v.id)}>
+                                {v.question}
+                              </div>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </ModalBody>
+
+              <ModalFooter className="flex flex-row gap-10">
+                <button className={BtnActive}
+                  onClick={handleCreate}>
+                  {detailId ? 'Сохранить' : 'Создавать'}
+                </button>
+                <button className={BtnActive}
+                  onClick={() => { setIsOpen(false) }}>
+                  Редактировать</button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+          <Modal isOpen={isOpenNew} onClose={() => { setIsOpenNew(false) }} size="3xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="bg-gray-100">Подтверждать</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody className="bg-red-100">
+                <p className="text-xl md:text-2xl xl:text-3xl font-semibold">
+                  Вы уверены, что удалите этот контент?
+                </p>
+              </ModalBody>
+              <ModalFooter className="flex flex-row gap-10">
+                <button className={BtnActive}
+                  onClick={handleDelete}>
+                  OK
+                </button>
+                <button className={BtnActive}
+                  onClick={() => { setIsOpenNew(false) }}>
+                  Отмена
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+          <Modal isOpen={isOpenDelete} onClose={() => { setIsOpenDelete(false) }} size="3xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="bg-gray-100">Подтверждать</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody className="bg-red-100">
+                <p className="text-xl md:text-2xl xl:text-3xl font-semibold">
+                  Вы уверены, что удалите этот контент?
+                </p>
+              </ModalBody>
+              <ModalFooter className="flex flex-row gap-10">
+                <button className={BtnActive}
+                  onClick={handleDelClick}>
+                  OK
+                </button>
+                <button className={BtnActive}
+                  onClick={() => { setIsOpenDelete(false) }}>
+                  Отмена
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </div >
       ) : null}
-
       <Footer />
     </>
-  );
+  )
 }
-// export default dynamic(() => Promise.resolve(DirectionDetailPage), {
-//   ssr: false,
-// });
 
 export default DirectionDetailPage;

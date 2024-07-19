@@ -4,11 +4,21 @@ import { useState, useEffect } from 'react';
 import Router from "next/router"
 import { ToastContainer, toast } from 'react-toastify';
 import Link from "next/link"
+import Dropdown from "../../../components/Layout/Dropdown";
+
 export default function NavBar() {
+  const headerDropdown = {
+    title: "Еще",
+    items: [],
+  };
   useEffect(() => {
     var saveData = JSON.parse(localStorage.saveData || null) || {};
-    if (saveData?.userInfo?.type != 1) {
-      Router.push('/auth/login');
+    if (!saveData?.userInfo) {
+      if (Router.pathname == '/auth/signup') {
+        Router.push('/auth/signup')
+      } else Router.push('/auth/login')
+    } else {
+      if (Router.pathname == '/auth/signup' || Router.pathname == '/auth/login') Router.push('/')
     }
   }, []);
 
@@ -31,23 +41,25 @@ export default function NavBar() {
           </div>
           <div className="flex gap-x-2 md:gap-x-10 ">
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/meta">Мета</Link>
+              <Link href="/meta">Мета</Link>
             </div>
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/seo">SEO</Link>
+              <Link href="/seo">SEO</Link>
             </div>
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/direction">Направления</Link>
+              <Link href="/direction">Направления</Link>
             </div>
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/attraction">Достопримечательности</Link>
+              <Link href="/attraction">Достопримечательности</Link>
             </div>
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/blog">Блог</Link>
+              <Link href="/blog">Блог</Link>
             </div>
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">
-              <Link href="/admin/faq">Вопросы и ответы</Link>
+              <Link href="/faq">Вопросы и ответы</Link>
             </div>
+            <Dropdown data={headerDropdown} />
+
           </div>
         </div>
       </div >

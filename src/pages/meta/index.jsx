@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, normalInputCss, BgColor, BtnActive, sitePages } from '../../../const/CustomConsts';
+import { API_BASE_URL, normalInputCss, BgColor, BtnActive, sitePages } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import Router from "next/router";
 import { Floppy, Trash } from 'react-bootstrap-icons';
-import { getMetaData, putMetaData, postMetaData, deleteMetaData } from "../../../const/Apis";
+import { getMetaData, putMetaData, postMetaData, deleteMetaData } from "../../const/Apis";
 
 const MetaPage = () => {
   const [loading, setLoading] = useState(false);

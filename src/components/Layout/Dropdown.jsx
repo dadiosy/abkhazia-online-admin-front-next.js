@@ -19,6 +19,7 @@ export default function Dropdown({ data, customClass }) {
     saveData.userInfo = null;
     localStorage.saveData = JSON.stringify(saveData);
     setUserInfo(null);
+    Router.push('/auth/login')
   }
 
   return (
@@ -66,11 +67,6 @@ export default function Dropdown({ data, customClass }) {
                     <div className='px-4 py-2 text-sm cursor-pointer hover:bg-slate-100' onClick={handleLogOut}>
                       <div className='class-p2'>{userInfo.firstName}{userInfo.lastName}-Выйти</div>
                     </div>
-                    {userInfo.type == 1 ? (
-                      <div className='px-4 py-2 text-sm cursor-pointer hover:bg-slate-100' onClick={() => { Router.push('/admin') }}>
-                        <div className='class-p2'>Админ-панель</div>
-                      </div>
-                    ) : null}
                   </>
                 ) : (
                   <a href="/auth/login"

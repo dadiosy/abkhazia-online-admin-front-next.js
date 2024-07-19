@@ -1,104 +1,121 @@
 import { NextSeo } from "next-seo";
-import { useEffect, useState, useRef } from "react"
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import Router, { useRouter } from 'next/router';
 import Image from "next/image";
 import axios from "axios";
+import NavBar from "../components/layout/NavBar";
+import Footer from "../components/layout/Footer";
+import { API_BASE_URL, BtnActive } from '../../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
-import Router, { useRouter } from 'next/router'
-import moment from "moment";
-import NavBar from "../../components/Layout/NavBar";
-import Footer from "../../components/Layout/Footer";
-import TeleBookPanel from "../../components/common/TeleBookPanel";
-import AnswerPanel from "../../components/faq/AnswerPanel";
-import AnswerPanelRepeat from "../../components/faq/AnswerPanelRepeat";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
-import DropzoneImage from "../../components/faq/dropzoneImage";
-import { Helmet } from 'react-helmet';
-import { getMetaData } from "../../const/Apis";
+import { Select } from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
+import AnswerPanel from "../components/faq/AnswerPanel";
+import DropzoneImage from "../components/faq/dropzoneImage";
 
-const FaqDetailPage = () => {
-  const [metaData, setMetaData] = useState({});
-  const [userInfo, setUserInfo] = useState();
+const FaqDetail = () => {
   const [loading, setLoading] = useState(false);
-  const [faqData, setFaqData] = useState([]);
-  const [adminAnswer, setAdminAnswer] = useState(null);
-  const [normalAnswer, setNormalAnswer] = useState(null);
+  const [dataList, setDataList] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchUser, setSearchUser] = useState("");
+  const [searchState, setSearchState] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selId, setSelId] = useState(null);
+  const [userInfo, setUserInfo] = useState();
   const [textData, setTextData] = useState('');
-  const [newAnswer, setNewAnswer] = useState(1);
-  const [detailId, setDetailId] = useState(0);
+  const [isEllipsis, setIsEllipsis] = useState(true);
   const [userName, setUserName] = useState('');
   const [userAvatar, setUserAvatar] = useState(null);
-  const router = useRouter();
-  const answerBtnRef = useRef(null);
   const handleNewImg = (newImgPath) => { setUserAvatar(newImgPath); }
+  const router = useRouter();
+  const detailId = router.query.id;
 
-  const handleTextChange = (event) => {
-    setTextData(event.target.value);
-  }
-  useEffect(() => {
-    getFaqDetailData();
-  }, [detailId]);
-
-  useEffect(() => {
-    if (router.query.id > 0) {
-      setDetailId(router.query.id);
-    }
-  }, [router.query.id])
-
-  useEffect(() => {
-    var saveData = JSON.parse(localStorage?.saveData || null) || {};
-    setUserInfo(saveData.userInfo);
-    getMetaData({}).then(res => {
-      setMetaData(res.data.data.filter((ele) => ele.url === useRouter().pathname)[0]);
-    }).catch(err => {
+  const getUsers = () => {
+    setLoading(true);
+    axios.get(API_BASE_URL + '/user', {
+      params: {
+        // limit: 5,
+        // offset: pageNum
+      }
+    }).then((res) => {
+      setUsers(res.data.data);
+      setLoading(false);
+    }).catch((err) => {
       console.log(err);
     })
-  }, [])
+  }
 
-  const getFaqDetailData = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(API_BASE_URL + '/faq/question/' + detailId, {
+  const getDataList = () => {
+    if (detailId > 0) {
+      setLoading(true);
+      axios.get(API_BASE_URL + "/faq/admin/question/" + detailId, {
         id: detailId,
-      });
-      setFaqData(res.data.data);
-      setAdminAnswer(res.data.data?.answers?.filter(function (obj) { return (obj.isRight == true) && obj.approve == 1 })[0]);
-      setNormalAnswer(res.data.data?.answers?.filter(function (obj) { return (obj.isRight == false) && obj.approve == 1 }));
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
+      }).then((res) => {
+        setDataList(res.data.data);
+        setLoading(false);
+      }).catch((err) => {
+        console.log(err);
+      })
     }
   }
 
-  const handleRate = (id, rateValue) => {
-    let saveData = JSON.parse(localStorage.saveData || null) || {};
-    let rateArr = saveData.rateArr ? saveData.rateArr : [];
-    if (rateArr.includes(id)) {
-      rateArr = rateArr.filter(item => item !== id);
-      rateValue--;
-    } else {
-      rateArr.push(id);
-      rateValue++
-    }
-    saveData.rateArr = rateArr;
-    localStorage.saveData = JSON.stringify(saveData);
-
-    axios.put(API_BASE_URL + '/faq/admin/answer/' + id,
-      { 'rating': rateValue }
+  const deleteAnswer = () => {
+    setLoading(true);
+    axios.delete(API_BASE_URL + "/faq/admin/answer/" + selId,
+      // { id: selId },
+      { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
-      if (res.data.statusCode == 200) {
-        toast.success('sucess');
-        getFaqDetailData();
-      }
+      getDataList();
+      setLoading(false);
     }).catch((err) => {
       if (err.response?.status == 401) {
         toast.error("пожалуйста, войдите в систему");
         Router.push('/auth/login');
       }
       console.log(err);
-    });
+    })
+  }
 
+  useEffect(() => {
+    var saveData = JSON.parse(localStorage?.saveData || null) || {};
+    setUserInfo(saveData.userInfo);
+    getDataList();
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    getDataList();
+  }, [detailId]);
+
+  const handleDelClick = () => {
+    setIsOpen(false);
+    deleteAnswer();
+  }
+
+  const onHandleChild = (id, approve) => {
+    if (approve == 8) { //edit      
+      getDataList();
+    }
+    if (approve == -1) {  //delete
+      setSelId(id);
+      setIsOpen(true);
+    }
+    if (approve == 1 || approve == 2) {//approve then dis
+      axios.put(API_BASE_URL + "/faq/admin/answer/" + id,
+        { approve: approve },
+        { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+      ).then((res) => {
+        toast.success('sucess');
+        getDataList();
+      }).catch((err) => {
+        if (err.response?.status == 401) {
+          toast.error("пожалуйста, войдите в систему");
+          Router.push('/auth/login');
+        }
+        console.log(err);
+      })
+    }
   }
   const handleCreateAnswer = () => {
     if (textData == "") { toast.error('Напишите текст ответа!'); return; }
@@ -130,138 +147,145 @@ const FaqDetailPage = () => {
     });
     setTextData('');
   }
-  if (router.query.scrollTo === 'answerBtn' && answerBtnRef.current) {
-    answerBtnRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
-  const convertBrText = (text) => { return text.replace(/\n/g, "<br />"); };
   return (
     <>
-      {/* <NextSeo title="FaqDetail" /> */}
-      <NextSeo title={metaData?.title} description={metaData?.description} />
-      <Helmet>
-        {/* <title>{metaData?.title}</title>
-            <meta name="description" content={metaData?.description} /> */}
-        <meta name="keywords" content={metaData?.keyword} />
-      </Helmet>
+      <NextSeo title="Главная" />
       <NavBar />
-      <div className="flex flex-col w-full bg-white  mt-[60px] md:mt-[94px]">
+      <div className="flex flex-col container mx-auto max-w-[1440px] min-h-[500px] gap-5 mt-[60px] md:mt-[94px]">
         {loading ? (<div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div>) : null}
-        <div className="flex flex-col items-center mx-auto max-w-[1440px]">
-          {faqData ? (
-            <div className="px-4 max-w-[1200px] py-6 md:py-8 space-y-5 md:space-y-11">
-              <div className="space-y-4 md:space-y-6">
-                <div className="flex md:py-3 gap-1.5 md:gap-3">
-                  <div onClick={() => { Router.push('/') }}>
-                    <p className="text-xs md:text-md font-medium text-[#B5B5B5] cursor-pointer">
-                      Главная
-                    </p>
+        <div className="px-4 md:px-[8.333333333%] items-center flex flex-col justify-center gap-5 my-5">
+          <div className="hidden flex-col md:flex-row justify-center items-center gap-2 md:gap-10 my-5 px-4 py-2 shadow-md rounded-md">
+            <div>
+              <Select placeholder='Пользователь' size='md' value={searchUser}
+                onChange={(e) => { setSearchUser(e.target.value) }}
+              // bg='tomato' borderColor='tomato' color='white'
+              >
+                {users?.map((v, i) => (
+                  <option key={i} value={v.id}>{v.firstName} {v.lastName}</option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <input id="searchText" placeholder="" value={searchText}
+                className="w-full border font-semibold rounded-md py-1 placeholder:text-gray-400 px-3 text-lg"
+                onChange={(e) => { setSearchText(e.target.value) }}
+              />
+            </div>
+            <div>
+              <Select placeholder='Состояние' size='md' value={searchState}
+                onChange={(e) => { setSearchState(e.target.value) }}
+              // bg='tomato' borderColor='tomato' color='white'
+              >
+                <option value='0'>В ожидании</option>
+                <option value='1'>Утвердить</option>
+                <option value='2'>Отклонить</option>
+              </Select>
+            </div>
+            <div><button className={BtnActive}
+              onClick={getDataList}>Поиск</button></div>
+          </div>
+          {dataList ? (
+            <div className="flex flex-col justify-center gap-3">
+              <div className="flex gap-8">
+                <div className="flex flex-col items-center justify-center w-12 md:w-20 ">
+                  <div className="flex w-[56] h-[56] rounded-full bg-[#D7D7D7]">
+                    <Image src={dataList.ownerAvatar ? dataList.ownerAvatar : '/icon/avatar.png'}
+                      width={56} height={56}
+                      objectFit="cover" className="rounded-full"
+                    />
                   </div>
-                  <p className="text-xs md:text-md font-medium">/</p>
-                  <div className="flex" onClick={() => { Router.push(`/faq`) }}>
-                    <p className="text-nowrap text-xs md:text-md font-medium text-[#B5B5B5] cursor-pointer">
-                      Вопросы и ответы
-                    </p>
-                  </div>
-                  <p className="text-xs md:text-md font-medium">/</p>
-                  <p className="text-xs md:text-md font-medium w-40 md:w-80 truncate">
-                    {faqData.questionText}
+                </div>
+                <div className="flex flex-col justify-between">
+                  <p onClick={() => { setIsEllipsis(!isEllipsis) }}
+                    className={`text-lg md:text-xl font-bold ${isEllipsis ? 'custom-ellipsis-one' : 'flex-wrap'}`}>
+                    {dataList.questionText}
+                  </p>
+                  <p className="text-base md:text-md font-extrabold flex-wrap">
+                    {dataList.ownerName}
                   </p>
                 </div>
-                <div className="flex gap-3">
-                  <Image src={faqData.ownerAatar ? faqData.ownerAatar : '/icon/avatar.png'}
-                    width={56} height={56}
-                    objectFit="cover" className="rounded-full"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <p className="text-base md:text-md font-medium">
-                      {faqData.ownerName}
-                    </p>
-                    <p className="text-xs md:text-base font-medium text-[#919494]">
-                      {moment(faqData.createAt).format("DD MMMM YYYY")}
-                    </p>
-                  </div>
-                </div>
-                <h2 className="xl:leading-[61.2px] !text-[24px] md:!text-[51px]">
-                  {faqData.questionText}
-                </h2>
-                {adminAnswer ? (
-                  <>
-                    <div className="bg-[#FFF8ED] p-4 md:p-8 rounded-xl font-Manrop">
-                      <div className="space-y-4 md:space-y-8 text-lg font-semibold">
-                        <div dangerouslySetInnerHTML={{ __html: convertBrText(adminAnswer?.answerText) }} />
-                      </div>
-                    </div>
-                    <button className={`${BtnActive} !text-[14px] md:!text-[18px]`}
-                      onClick={() => { adminAnswer?.id ? handleRate(adminAnswer.id, adminAnswer.rating) : null }}
-                    >
-                      Было полезно • {adminAnswer.rating}
-                    </button>
-                  </>
-                ) : null}
-
               </div>
-              <div>
-                <div className="w-full lg:w-[65%] space-y-8">
-                  <h3 className="xl:leading-[52.8px] !text-[24px] md:!text-[44px]" ref={answerBtnRef}>
-                    Ответы туристов
-                  </h3>
-                  {normalAnswer?.map((v, i) => (
-                    <div key={i}>
-                      <AnswerPanel
-                        userName={v.ownerName}
-                        avatar={v.ownerAvatar}
-                        answer={v.answerText}
-                        aDate={moment(v.createAt)}
-                        feedCount={v.rating}
-                        handleFeed={() => {
-                          handleRate(v.id, v.rating);
-                        }}
-                      />
-                    </div>
-                  ))}
-
-                  <div className="flex flex-col md:flex-row gap-y-4">
-                    <div className="pr-2 md:pr-4">
-                      <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7] justify-center items-center">
-                        <Image src={userAvatar ? userAvatar : '/icon/avatar.png'} width={56} height={56} className="rounded-full" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full md:w-[90%] border border-[#D7D7D7] rounded-xl min-w-[700px]">
-                      <textarea
-                        className="outline-none p-4 w-full rounded-xl text-lg font-medium bg-slate-50"
-                        placeholder="Написать ответ"
-                        value={textData}
-                        onChange={handleTextChange}
-                        rows={2} // Number of visible rows
-                        cols={40}
-                      />
-                      <div className="flex p-4 justify-between gap-4">
-                        <div className="text-lg flex flex-row gap-4">
-                          <div className="mt-2 text-[14px]">Название</div>
-                          <input name="userName" value={userName} className="w-32 rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1 text-center"
-                            onChange={(e) => { setUserName(e.target.value) }} />
-                        </div>
-                        <div className="text-lg flex flex-row gap-4">
-                          <DropzoneImage onChildData={handleNewImg} />
-                        </div>
-                        <button className="defaultButton14"
-                          onClick={handleCreateAnswer}
-                        >
-                          Отправить
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="w-full flex-col justify-center text-3xl gap-10 space-y-5">
+                {dataList?.answers.map((v, i) => (
+                  <AnswerPanel
+                    key={i}
+                    id={v.id}
+                    userName={v.ownerName}
+                    avatar={v.ownerAvatar}
+                    answer={v.answerText}
+                    aDate={v.createAt}
+                    feedCount={v.rating}
+                    approve={v.approve}
+                    active={v.isRight}
+                    handleChild={onHandleChild}
+                  />
+                ))}
               </div>
             </div>
           ) : null}
+          <div className="flex flex-col md:flex-row w-full px-[5%]">
+            <div className="pl-2 pr-8 pb-4">
+              <div className="flex rounded-full bg-[#D7D7D7] justify-center w-[56px]">
+                <Image src={userAvatar ? userAvatar : '/icon/avatar.png'} width={56} height={56} className="rounded-full"
+                  onClick={() => {
+
+                  }} />
+              </div>
+            </div>
+            <div className="flex flex-col w-full md:w-[90%] border border-[#D7D7D7] rounded-xl shadow">
+              <textarea
+                className="outline-none p-4 w-full rounded-xl text-lg font-medium bg-slate-50"
+                placeholder="Написать ответ"
+                value={textData}
+                onChange={(e) => { setTextData(e.target.value) }}
+                rows={2} // Number of visible rows
+                cols={40}
+              />
+              <div className="flex p-4 justify-between gap-4">
+                <div className="text-lg flex flex-row gap-4">
+                  <div className="mt-2 text-[14px]">Название</div>
+                  <input name="userName" value={userName} className="w-full rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1 text-center"
+                    onChange={(e) => { setUserName(e.target.value) }} />
+                </div>
+                <div className="text-lg flex flex-row gap-4">
+                  <DropzoneImage onChildData={handleNewImg} />
+                </div>
+                <button className="defaultButton14"
+                  onClick={handleCreateAnswer}
+                >
+                  Отправить
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      {/* Telegram */}
-      <TeleBookPanel />
+
+      <Modal isOpen={isOpen} onClose={() => { setIsOpen(false) }} size="3xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader className="bg-gray-100">Подтверждать</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody className="bg-red-100">
+            <p className="text-xl md:text-2xl xl:text-3xl font-semibold">
+              Вы уверены, что удалите этот контент?
+            </p>
+          </ModalBody>
+          <ModalFooter className="flex flex-row gap-10">
+            <button className={BtnActive}
+              onClick={handleDelClick}>
+              OK
+            </button>
+            <button className={BtnActive}
+              onClick={() => { setIsOpen(false) }}>
+              Отмена
+            </button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Footer />
     </>
-  );
+  )
 }
-export default FaqDetailPage;
+
+export default FaqDetail;

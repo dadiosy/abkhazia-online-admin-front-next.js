@@ -1,13 +1,13 @@
 import { useState } from "react"
 import Image from "next/image";
-import Heart from "../../../../../public/img/SVG/Heart";
+import Heart from "../../../../public/img/SVG/Heart";
 import moment from "moment";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'moment/locale/ru';
 import { TrashFill, HandThumbsDown, HandThumbsUp, Pen } from 'react-bootstrap-icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
-import { API_BASE_URL, BtnActive, BtnActive14 } from '../../../../const/CustomConsts';
+import { API_BASE_URL, BtnActive, BtnActive14 } from '../../../const/CustomConsts';
 
 const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, active, handleChild }) => {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
