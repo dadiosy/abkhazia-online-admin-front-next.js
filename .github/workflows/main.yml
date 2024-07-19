@@ -1,34 +1,30 @@
-name: Deploy Daisa Admin
+name: Deploy
 
 on:
   push:
     branches:
-      - main
+      - main  # Ветка, по пушу в которую будет запускаться деплой
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          echo "${SSH_PRIVATE_KEY}" > deploy_key
-          chmod 600 deploy_key
-          ssh-add deploy_key
-          ssh -o StrictHostKeyChecking=no root@89.111.134.237 "cd /var/www/daisa.ru/abkhazia-admin && git pull && npm install && npm run build && PORT=4000 pm2 restart daisa-admin || PORT=4000 pm2 start npm --name daisa-admin -- start && pm2 save"
+    - name: Deploy and build on server
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa user@server_ip << 'EOF'
+          cd /var/www/daisa.ru/abkhazia-admin/
+          git pull
+          pm2 stop daisa-admin
+          npm run build
+          PORT=4000 pm2 restart daisa-admin
+          pm2 save
+        EOF
