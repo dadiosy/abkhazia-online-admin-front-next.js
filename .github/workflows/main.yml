@@ -13,19 +13,24 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run build
+      run: npm run build
+    
     - name: Add SSH key
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Deploy and build on server
+    - name: Copy files to frontend server
+      run: scp -r . root@89.111.134.237:/var/www/daisa.ru/abkhazia-admin/
+       
+    - name: Deploy frontend
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@89.111.134.237 << 'EOF'
-          cd /var/www/daisa.ru/abkhazia-admin/
-          git pull
-          pm2 stop daisa-admin
-          npm install
-          npm run build
-          PORT=4000 pm2 restart daisa-admin
-          pm2 save
+        ssh root@89.111.134.237 << 'EOF'
+        cd /var/www/daisa.ru/abkhazia-frontend/
+        npm install
+        pm2 restart daisa-frontend
         EOF
