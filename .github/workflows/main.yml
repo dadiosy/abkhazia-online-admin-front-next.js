@@ -20,10 +20,11 @@ jobs:
 
     - name: Deploy and build on server
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa user@server_ip << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@89.111.134.237 << 'EOF'
           cd /var/www/daisa.ru/abkhazia-admin/
           git pull
           pm2 stop daisa-admin
+          npm install
           npm run build
           PORT=4000 pm2 restart daisa-admin
           pm2 save
