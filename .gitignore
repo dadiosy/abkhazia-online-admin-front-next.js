@@ -1,7 +1,6 @@
 #export
 out
 #API_BASE_URL
-# src/const/CustomConsts.js
 next.config.js
 
 # Logs
