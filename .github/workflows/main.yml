@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main  # Ветка, по пушу в которую будет запускаться деплой
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy and build on server
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@89.111.134.237 << 'EOF'
+          cd /var/www/daisa.ru/abkhazia-admin/
+          git pull
+          pm2 stop daisa-admin
+          npm install
+          npm run build
+          pm2 start daisa-admin
+          pm2 save
+        EOF
