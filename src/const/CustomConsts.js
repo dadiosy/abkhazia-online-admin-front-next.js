@@ -1,5 +1,5 @@
-// export const API_BASE_URL = "https://daisa.ru/api";
-export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = "https://daisa.ru/api";
+// export const API_BASE_URL = "http://localhost:5000";
 export const APSNY_CAMERA_LIST_URL = 'https://api.cyxym.net/bigbrother/v2?cams.get';
 export const APSNY_GET_TOKEN_URL = 'https://api.cyxym.net/bigbrother/v1?cams.stream';
 export const APSNY_LIVE_STREAM_URL = 'https://apsny.camera./player/';
