@@ -143,6 +143,7 @@ const DirectionDetailPage = () => {
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
     if (detailId != 'add') {
       let direction1 = {
+        "name": dataDetail.name,
         "title": dataDetail.title,
         "description": dataDetail.description,
         "heading": dataDetail.heading,
