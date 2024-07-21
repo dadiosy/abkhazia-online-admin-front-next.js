@@ -5,7 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive } from '../../../const/CustomConsts';
+import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
 import { Select } from '@chakra-ui/react'

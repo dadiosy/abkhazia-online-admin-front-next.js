@@ -5,10 +5,11 @@ import AttractionLink from "../attraction/AttractionLink";
 export default function ImgAttractionPanel({ data, link }) {
     const [curSi, setCurSi] = useState(0);
     const handleArrowClick = (step) => {
-        curSi += step;
-        curSi = (curSi < 0) ? 0 : curSi;
-        curSi = (curSi > data.length - 3) ? data.length - 3 : curSi;
-        setCurSi(curSi);
+        let _curSi = curSi
+        _curSi += step;
+        _curSi = (_curSi < 0) ? 0 : _curSi;
+        _curSi = (_curSi > data.length - 3) ? data.length - 3 : _curSi;
+        setCurSi(_curSi);
     }
     return (
         <div>
