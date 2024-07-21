@@ -1,3 +1,4 @@
+export const testconst = 'test'
 export const API_BASE_URL = "https://daisa.ru/api";
 // export const API_BASE_URL = "http://localhost:5000";
 export const APSNY_CAMERA_LIST_URL = 'https://api.cyxym.net/bigbrother/v2?cams.get';
