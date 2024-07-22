@@ -116,7 +116,7 @@ const SignPage = () => {
 				<div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
 					<div className="flex flex-col gap-2">
 						<div className='text-center mt-5'>
-							<Image onClick={fileSelect} alt="avatar" className="rounded-8 border cursor-pointer object-cover rounded-[100px]" height={100} width={100} src={avatar?.path ? (avatar?.path) : "/icon/avatar.png"} />
+							<Image onClick={fileSelect} alt="avatar" className="mx-auto rounded-8 border cursor-pointer object-cover rounded-[100px]" height={100} width={100} src={avatar?.path ? (avatar?.path) : "/icon/avatar.png"} />
 							<input className="hidden d-none cursor-pointer w-[200px] mb-8" ref={uploadRef} type="file" accept="image/png, image/jpeg" onChange={handleAvatarChange} />
 						</div>
 						<div className=''>
@@ -124,7 +124,7 @@ const SignPage = () => {
 								{nameFlag ? 'Неверное Название' : null}
 							</div>
 							<div className='flex flex-row justify-between'>
-								<div className="block text-sm font-medium leading-6 text-gray-900">Название</div>
+								<div className="block text-sm font-medium leading-6 text-gray-900">Имя</div>
 								<div className="block text-sm font-medium leading-6 text-gray-900">Фамилия</div>
 							</div>
 							<div className='flex flex-row gap-2'>
