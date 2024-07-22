@@ -64,7 +64,8 @@ const SignPage = () => {
 		try {
 			const res = await axios.post(API_BASE_URL + '/auth/signup', formData, {
 				headers: {
-					'Content-Type': 'multipart/form-data'
+					'Content-Type': 'multipart/form-data',
+					'Access-Control-Allow-Origin': 'http://staff.daisa.ru'
 				}
 			});
 			if (res.data.statusCode == 200) {
