@@ -18,7 +18,7 @@ const Wysi = ({ id, setWysiData, getWysiData }) => {
     const onEditorStateChange = (newEditorState) => {
         setEditorState(newEditorState);
     };
-    const contentHTML = "";
+    let contentHTML = "";
     const getContentAsHTML = () => {
         const contentState = editorState.getCurrentContent();
         contentHTML = draftToHtml(convertToRaw(contentState));

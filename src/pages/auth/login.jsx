@@ -20,9 +20,9 @@ const LoginPage = () => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   }
 
-  const saveUserInfo = () => {
+  const saveUserInfo = (_userInfo) => {
     var saveData = JSON.parse(localStorage.saveData || null) || {};
-    saveData.userInfo = userInfo;
+    saveData.userInfo = _userInfo;
     localStorage.saveData = JSON.stringify(saveData);
   }
 
@@ -33,9 +33,11 @@ const LoginPage = () => {
     }
     ).then((res) => {
       if (res.data.statusCode == 200) {
-        userInfo = res.data.data.user;
-        userInfo.token = res.data.data.token;
-        saveUserInfo();
+
+        const _userInfo = res.data.data.user;
+        _userInfo.token = res.data.data.token;
+        setUserInfo(_userInfo)
+        saveUserInfo(_userInfo);
         toast.success('вход успешный');
         Router.push('/');
       }
