@@ -18,7 +18,7 @@ const BlogAnswerPanel = ({ id, userName, avatar, answer, aDate }) => {
                 <div className="flex w-12 md:w-14 h-12 md:h-14 rounded-full bg-[#D7D7D7]">
                     <img src={avatar ? avatar : '/icon/avatar.png'}
                         width={100} height={100}
-                        objectFit="cover" className="rounded-full"
+                        className="object-cover rounded-full"
                     />
                 </div>
             </div>

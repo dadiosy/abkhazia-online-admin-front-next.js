@@ -12,7 +12,7 @@ const AnswerPanel = ({ userName, avatar, answer, aDate, feedCount, handleFeed })
             <div className="pr-2">
                 <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7]">
                     <img src={avatar ? `${API_BASE_URL}/avatar/${avatar}` : '/icon/avatar.png'}
-                        width={56} height={56} objectFit="cover" className="rounded-full"
+                        width={56} height={56} className="object-cover rounded-full"
                     />
                 </div>
             </div>

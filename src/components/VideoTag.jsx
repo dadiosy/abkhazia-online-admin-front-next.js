@@ -84,7 +84,7 @@ const VideoTag = () => {
 
               {streamDatas?.map((v, i) => (
                 <div key={i} className="col-span-1 relative">
-                  <img src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
+                  <img src={v.preview} className="object-cover rounded-md md:rounded-xl w-full h-full" />
                   <div className="absolute top-2 left-2 md:top-5 md:left-5">
                     <button className="flex gap-2 bg-white border-[1.5px] border-[#ffffff] rounded-md md:rounded-lg
                        px-2 py-1 md:px-4 md:py-2 items-center text-[#000000]">
@@ -108,7 +108,7 @@ const VideoTag = () => {
               {/* <div className={`flex w-[${overflowWidth}%] md:hidden whitespace-nowrap gap-3`}> */}
               {streamDatas?.map((v, i) => (
                 <div key={i} className="relative">
-                  <img src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
+                  <img src={v.preview} className="object-cover rounded-md md:rounded-xl w-full h-full" />
                   <div className="absolute z-10 top-2 left-2 md:top-5 md:left-5">
                     <button className="flex gap-2 bg-white border-[1.5px] border-[#ffffff] rounded-md md:rounded-lg
                        px-2 py-1 md:px-4 md:py-2 items-center text-[#000000]">

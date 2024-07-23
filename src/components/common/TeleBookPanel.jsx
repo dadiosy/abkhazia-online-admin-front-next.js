@@ -31,17 +31,17 @@ export default function TeleBookPanel() {
                         <div className="flex justify-between md:justify-start">
                             <div className="flex flex-col md:flex-row gap-x-4 xl:gap-x-8 gap-y-3 md:gap-y-0">
                                 <div className="flex items-center gap-x-2">
-                                    <img src='/img/SVG/Transfer.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/Transfer.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Трансферы</h6>
                                     <div className="block md:hidden class-btn"> Трансферы</div>
                                 </div>
                                 <div className="flex items-center gap-x-2">
-                                    <img src='/img/SVG/Routing.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/Routing.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Экскурсии</h6>
                                     <div className="block md:hidden class-btn"> Экскурсии</div>
                                 </div>
                                 <div className="flex items-center gap-x-2">
-                                    <img src='/img/SVG/House.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/House.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Отели</h6>
                                     <div className="block md:hidden class-btn"> Отели</div>
                                 </div>
