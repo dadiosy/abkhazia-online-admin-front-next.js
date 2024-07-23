@@ -21,7 +21,7 @@ const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar })
             <div className="flex flex-col md:flex-row justify-between md:items-end gap-3 md:gap-0">
                 <div className="flex gap-3">
                     <div className="flex">
-                        <Image src={userAvatar ? userAvatar : '/icon/avatar.png'}
+                        <img src={userAvatar ? userAvatar : '/icon/avatar.png'}
                             width={56} height={56}
                             alt="User" objectFit="cover"
                             className="rounded-full"

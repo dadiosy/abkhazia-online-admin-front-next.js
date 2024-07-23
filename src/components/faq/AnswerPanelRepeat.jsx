@@ -2,7 +2,7 @@ import Image from "next/image";
 import Repeat from "../../../public/img/SVG/Repeat";
 import moment from "moment";
 import 'moment/locale/ru';
-import { API_BASE_URL} from '../../const/CustomConsts';
+import { API_BASE_URL } from '../../const/CustomConsts';
 
 const AnswerPanelRepeat = ({ userName, avatar, answer, aDate }) => {
     moment.locale('ru'); // Set locale to Russian
@@ -14,7 +14,7 @@ const AnswerPanelRepeat = ({ userName, avatar, answer, aDate }) => {
             </div>
             <div className="w-[15%] md:w-[10%]">
                 <div className="flex w-12 md:w-14 h-12 md:h-14 rounded-full bg-[#D7D7D7]">
-                    <Image src={`${API_BASE_URL}/avatar/${avatar}`}
+                    <img src={`${API_BASE_URL}/avatar/${avatar}`}
                         width={100} height={100}
                         objectFit="cover" className="rounded-full"
                     />

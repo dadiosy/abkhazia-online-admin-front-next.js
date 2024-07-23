@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="w-full max-w-[1200px] py-8 md:py-[60px]">
         <div className="flex flex-col md:flex-row w-full gap-6 ">
           <div className="flex justify-center md:mr-10">
-            <Image
+            <img
               src='/img/Logo_black.svg'
               width={200}
               height={100}
@@ -37,7 +37,7 @@ export default function Footer() {
               </div>
               {/* <div className="flex justify-center md:justify-start items-center md:items-start">
                 <div className="w-[108px] h-[108px] flex p-2">
-                  <Image
+                  <img
                     src='/img/qr.svg'
                     width={200}
                     height={200}
@@ -86,7 +86,7 @@ export default function Footer() {
               </div>
               {/* <div className="flex justify-center md:justify-start items-center md:items-start">
                 <div className="w-[108px] h-[108px] flex p-2">
-                  <Image
+                  <img
                     src='/img/qr.svg'
                     width={200}
                     height={200}

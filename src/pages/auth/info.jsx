@@ -83,7 +83,7 @@ const MyInfoPage = () => {
 					<div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
 						<div className="flex flex-col gap-2">
 							<div className='text-center mt-1'>
-								<Image className="rounded-8 border object-cover rounded-[100px]" height={100} width={100}
+								<img className="rounded-8 border object-cover rounded-[100px]" height={100} width={100}
 									src={userInfo?.avatar ? `${API_BASE_URL}/avatar/${userInfo.avatar}` : '/icon/avatar.png'} />
 							</div>
 							<div className=''>

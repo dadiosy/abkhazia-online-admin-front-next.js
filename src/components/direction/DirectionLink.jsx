@@ -8,12 +8,12 @@ const DirectionLink = ({ data, link }) => {
     return (
         <div>
             <div onClick={() => { Router.push(routerPath) }} className='cursor-pointer flex w-full h-full justify-center rounded-[20px] relative'>
-                {/* <Image loader={imageLoader} src={`${API_BASE_URL}/direction/${data.bgImg}`} width={600} height={400} className="rounded-[10px]" /> */}
+                {/* <img loader={imageLoader} src={`${API_BASE_URL}/direction/${data.bgImg}`} width={600} height={400} className="rounded-[10px]" /> */}
                 <div className="block md:hidden">
-                    <Image src={data.bgImg} width={600} height={600} className="rounded-[10px]" objectFit="cover" />
+                    <img src={data.bgImg} width={600} height={600} className="rounded-[10px]" objectFit="cover" />
                 </div>
                 <div className="md:block hidden">
-                    <Image src={data.bgImg} width={600} height={400} className="rounded-[10px]" />
+                    <img src={data.bgImg} width={600} height={400} className="rounded-[10px]" />
                     <div className="bg-gradient-to-b from-[#000] absolute bottom-0 h-3/5 md:h-2/5 w-full rotate-180 rounded-[10px]"></div>
                 </div>
 

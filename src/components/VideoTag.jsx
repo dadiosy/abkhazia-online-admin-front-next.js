@@ -84,19 +84,19 @@ const VideoTag = () => {
 
               {streamDatas?.map((v, i) => (
                 <div key={i} className="col-span-1 relative">
-                  <Image src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
+                  <img src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
                   <div className="absolute top-2 left-2 md:top-5 md:left-5">
                     <button className="flex gap-2 bg-white border-[1.5px] border-[#ffffff] rounded-md md:rounded-lg
                        px-2 py-1 md:px-4 md:py-2 items-center text-[#000000]">
                       <h6>{v.name}</h6>
-                      <Image color={"#FF6432"} src={'/icon/radar.svg'} width={8} height={8} />
+                      <img color={"#FF6432"} src={'/icon/radar.svg'} width={8} height={8} />
                     </button>
                   </div>
                   <div className="absolute top-5 right-5 cursor-pointer videoButton"
                     // onClick={() => { Router.push(`${v.url}`) }}
                     onClick={() => { window.open(`${v.url}`, '_blank') }}
                   >
-                    <Image color={"#FF6432"} src={'/img/play.png'} />
+                    <img color={"#FF6432"} src={'/img/play.png'} />
                   </div>
                 </div>
               ))}
@@ -108,19 +108,19 @@ const VideoTag = () => {
               {/* <div className={`flex w-[${overflowWidth}%] md:hidden whitespace-nowrap gap-3`}> */}
               {streamDatas?.map((v, i) => (
                 <div key={i} className="relative">
-                  <Image src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
+                  <img src={v.preview} className="rounded-md md:rounded-xl w-full h-full" objectFit='cover' />
                   <div className="absolute z-10 top-2 left-2 md:top-5 md:left-5">
                     <button className="flex gap-2 bg-white border-[1.5px] border-[#ffffff] rounded-md md:rounded-lg
                        px-2 py-1 md:px-4 md:py-2 items-center text-[#000000]">
                       <h6 className="text-[16px] font-GolosText">{v.name}</h6>
-                      <Image color={"#FF6432"} src={'/icon/radar.svg'} width={6} height={6} />
+                      <img color={"#FF6432"} src={'/icon/radar.svg'} width={6} height={6} />
                     </button>
                   </div>
                   <div className="absolute top-5 right-5 cursor-pointer videoButton"
                     // onClick={() => { Router.push(`${v.url}`) }}
                     onClick={() => { window.open(`${v.url}`, '_blank') }}
                   >
-                    <Image color={"#FF6432"} src={'/img/play.png'} width={10} height={10} />
+                    <img color={"#FF6432"} src={'/img/play.png'} width={10} height={10} />
                   </div>
                 </div>
               ))}

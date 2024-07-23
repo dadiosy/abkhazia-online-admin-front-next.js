@@ -11,7 +11,7 @@ export default function ImageBottomText({ imgDesc, imgSrc, linkAddress }) {
         onClick={() => { Router.push(`${linkAddress}`) }}
       >
         <div className="w-full relative">
-          <Image
+          <img
             src={imgSrc}
             width={600}
             height={400}

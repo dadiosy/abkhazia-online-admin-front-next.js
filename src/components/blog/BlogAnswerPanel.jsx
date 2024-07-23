@@ -16,7 +16,7 @@ const BlogAnswerPanel = ({ id, userName, avatar, answer, aDate }) => {
         <div className="flex font-Manrop">
             <div className="w-[15%] md:w-[10%] mr-2">
                 <div className="flex w-12 md:w-14 h-12 md:h-14 rounded-full bg-[#D7D7D7]">
-                    <Image src={avatar ? avatar : '/icon/avatar.png'}
+                    <img src={avatar ? avatar : '/icon/avatar.png'}
                         width={100} height={100}
                         objectFit="cover" className="rounded-full"
                     />

@@ -53,7 +53,7 @@ const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, 
     <div className="flex gap-3 border border-l border-gray-100 shadow-lg rounded-lg p-5 min-w-[600px]">
       <div className="mr-4">
         <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7]">
-          <Image src={avatar ? avatar : '/icon/avatar.png'}
+          <img src={avatar ? avatar : '/icon/avatar.png'}
             width={56} height={56}
             objectFit="cover" className="rounded-full"
           />

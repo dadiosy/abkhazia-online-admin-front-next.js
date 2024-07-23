@@ -316,7 +316,7 @@ const SeoIndex = () => {
                   <div className="self-center">Изображение</div>
                   <DropzoneImage onChildData={handleNewImg} />
                   {blockData?.img && (
-                    <Image src={blockData.img} width={300} height={180} className='object-cover rounded-md shadow-xl' />
+                    <img src={blockData.img} width={300} height={180} className='object-cover rounded-md shadow-xl' />
                   )}
                   <input hidden name="img" value={blockData?.img} className="w-full rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1 text-center"
                     onChange={(e) => { handleBlockData(e.target.name, e.target.value) }} />

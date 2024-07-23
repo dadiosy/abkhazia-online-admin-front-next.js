@@ -14,7 +14,7 @@ export default function ImageRightText({ id, imgTitle, imgSrc, imgDesc, imgDate,
         onClick={() => { Router.push(`/blog/${id}`) }}
       >
         <div className="flex w-[34%]">
-          <Image
+          <img
             // loader={imageLoader}
             // src={imgSrc}
             src={imgSrc}
