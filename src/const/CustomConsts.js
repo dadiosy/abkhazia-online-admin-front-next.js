@@ -39,3 +39,4 @@ export const sitePages = [
     { id: 9, page: 'weather' },
     { id: 10, page: 'weather-detail' }
 ]
+
