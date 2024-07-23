@@ -13,9 +13,7 @@ export default function ImageBottomText({ imgDesc, imgSrc, linkAddress }) {
         <div className="w-full relative">
           <img
             src={imgSrc}
-            width={600}
-            height={400}
-            className="rounded-xl object-cover"
+            className="rounded-xl h-[250px] w-full object-cover"
           />
           <div className="bg-gradient-to-b from-[#000] absolute bottom-0 h-3/5 md:h-2/5 w-full rotate-180 rounded-[10px]"></div>
           <div className="w-full absolute bottom-0 md:bottom-2 left-2 md:left-4">
