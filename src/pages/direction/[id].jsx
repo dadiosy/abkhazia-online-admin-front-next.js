@@ -2,7 +2,6 @@
 import { NextSeo } from "next-seo";
 import { useState, useEffect, useRef } from "react"
 import Router, { useRouter } from "next/router";
-import Image from "next/image";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
