@@ -98,7 +98,7 @@ const index = () => {
             {dataList?.map((v, i) => (
               <div key={i} onClick={() => handleImgClick(v.id)} className='cursor-pointer flex w-full h-full justify-center rounded-[20px] relative col-span-3 md:col-span-1'>
                 <div className="rounded-[10px]">
-                  <Image src={v.bgImg} width={600} height={400} className="rounded-[10px]" />
+                  <img src={v.bgImg} width={600} height={400} className="rounded-[10px]" />
                   <div className="absolute bottom-5 left-5 text-white text-2xl font-semibold text-shadow-lg  flex-wrap w-[90%]">
                     {v.title}
                   </div>

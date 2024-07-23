@@ -13,7 +13,7 @@ export default function ImageBottomText({ id, imgSrc, imgDesc, imgDate, imgType 
         onClick={() => { Router.push(`/blog/${id}`) }}
       >
         <div className="flex w-full">
-          <Image
+          <img
             // loader={imageLoader}
             // src={imgSrc}
             src={imgSrc}

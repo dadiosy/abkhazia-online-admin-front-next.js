@@ -59,7 +59,7 @@ export default function NavBar() {
         <div className="flex flex-row w-full px-4 md:px-4 justify-between items-center">
           <div className="flex cursor-pointer"
             onClick={() => { Router.push('/') }}>
-            <Image src='/img/logo.png' width={150} height={60} alt="logo" objectFit="fill" />
+            <img src='/img/logo.png' width={150} height={60} alt="logo" objectFit="fill" />
           </div>
           <div className="flex gap-x-6 zero:gap-x-12">
             <div className="hidden zero:flex gap-x-12 class-p2">

@@ -35,7 +35,7 @@ const IconList = () => {
         <div className="h-[300px]  overflow-y-auto">
             <div className="grid grid-cols-8 gap-2 ">
                 {files?.map((v, i) => (
-                    <Image key={i} src={`/img/detail-svg/${v}`} width={36} height={36}
+                    <img key={i} src={`/img/detail-svg/${v}`} width={36} height={36}
                         className="cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-150"
                         onClick={() => { handleCopyClick(`/img/detail-svg/${v}`) }}
                     />

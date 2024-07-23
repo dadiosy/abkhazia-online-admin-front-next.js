@@ -46,7 +46,7 @@ export default function WeatherPanel({ wData, id }) {
                                 </p>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Image src={'/icon/weather/' + v.icon + '.svg'} width={64} height={64} layout="fixed" />
+                                <img src={'/icon/weather/' + v.icon + '.svg'} width={64} height={64} layout="fixed" />
                                 <p className="text-sm md:text-base font-medium text-[#292D32]">
                                     {v.description}
                                 </p>
