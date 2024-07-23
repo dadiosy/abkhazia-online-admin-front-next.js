@@ -17,8 +17,7 @@ import { Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, Accordi
 import YMapProvider from "../components/common/YMapProvider";
 import DropzoneImage from '../components/common/dropzoneImage';
 import IconList from "../components/common/IconList"
-import Editor from "../components/common/wysiwyg"
-
+import { Editor } from 'primereact/editor';
 const DirectionDetailPage = () => {
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [selContentId, setSelContentId] = useState(null);
@@ -478,8 +477,8 @@ const DirectionDetailPage = () => {
     setIsOpenAddBooking(false);
   };
 
-  const handleDescriptionChange = (htmlText) => {
-    setDataDetail({ ...dataDetail, description: htmlText })
+  const handleDescriptionChange = (e) => {
+    setDataDetail({ ...dataDetail, description: e.htmlValue })
   }
 
   return (
@@ -519,13 +518,7 @@ const DirectionDetailPage = () => {
                 </div>
                 <div className="flex flex-row">
                   <div className="my-2 mx-5 w-32 font-bold">Описание:</div>
-                  {/* <input name="description" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.description} /> */}
-                  {/* <textarea className="border border-gray-200 shadow-md p-2 w-full text-md rounded-lg" placeholder="" rows={2} cols={40}
-                    name="description"
-                    value={dataDetail.description}
-                    onChange={handleTextChange}
-                  /> */}
-                  <Editor getWysiData={handleDescriptionChange} setWysiData={dataDetail.description} />
+                  <Editor value={dataDetail.description} onTextChange={handleDescriptionChange} style={{ height: 200 }} />
                 </div>
                 <div className="flex flex-row">
                   <div className="my-2 mx-5 w-32 font-bold">Заключение:</div>
