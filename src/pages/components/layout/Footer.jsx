@@ -15,8 +15,7 @@ export default function Footer() {
                 width={200}
                 height={100}
                 alt="logo"
-                objectFit="fill"
-                className="self-center"
+                className="object-fill self-center"
               />
             </div>
             <div className="flex flex-col md:flex-row w-full md:w-[995px] justify-center md:justify-between gap-6 md:gap-0">
@@ -48,7 +47,7 @@ export default function Footer() {
                     width={200}
                     height={200}
                     alt="qr_code"
-                    objectFit="cover"
+                    
                     className="self-center"
                   />
                 </div>

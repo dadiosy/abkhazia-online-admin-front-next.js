@@ -155,7 +155,7 @@ export default function FindTravel() {
               gap-8 p-6 w-[372px] h-[766px] md:w-[744px] md:h-[383px] z-20 shadow-md bg-white rounded-lg">
                 <div className="w-full flex flex-col items-center gap-1 relative">
                   <div className="absolute top-0 left-1">
-                    <img src="/img/calendar-arrow.png" width={40} height={40} objectFit="cover" className="cursor-pointer rotate-180"
+                    <img src="/img/calendar-arrow.png" width={40} height={40} className="object-cover cursor-pointer rotate-180"
                       onClick={() => handleNextImage(-1)} />
                   </div>
                   <h5>
@@ -232,7 +232,7 @@ export default function FindTravel() {
 
                 <div className="w-full flex flex-col items-center gap-1 relative">
                   <div className="absolute top-0 right-1">
-                    <img src="/img/calendar-arrow.png" width={40} height={40} objectFit="cover" className="cursor-pointer"
+                    <img src="/img/calendar-arrow.png" width={40} height={40} className="object-cover cursor-pointer"
                       onClick={() => handleNextImage(1)} />
                   </div>
                   <h5>{moment(nowYear + '-' + nowMonth.toString().padStart(2, '0') + '-01').add(1, 'month').format("MMMM YYYY")}</h5>
@@ -328,7 +328,7 @@ export default function FindTravel() {
             onClick={() => { setModalFlag(!modalFlag) }}>
             <div className="pr-2 class-p1 !text-[16px] md:!text-[20px]">{childrenNum} взрослых</div>
             <div className="mt-2 pr-10">
-              <img src={'/img/down.png'} width={24} height={24} objectFit="cover" />
+              <img src={'/img/down.png'} width={24} height={24} className="object-cover " />
             </div>
           </div>
           {modalFlag && (
@@ -352,7 +352,7 @@ export default function FindTravel() {
               hover:shadow-md cursor-pointer" onClick={() => { setChildrenType('') }}>
                   <div className="class-p2">Ребенок : {childrenType}</div>
                   <div className="mt-1">
-                    <img src={'/img/close.png'} width={24} height={24} objectFit="cover" />
+                    <img src={'/img/close.png'} width={24} height={24} className="object-cover " />
                   </div>
                 </div>
               )}
@@ -360,8 +360,8 @@ export default function FindTravel() {
               hover:shadow-md cursor-pointer" onClick={() => { setExpandFlag(!expandFlag) }}>
                 <div className="class-p2 !text-[#FF6432]">Добавить ребенка</div>
                 <div className="mt-1">
-                  {expandFlag ? (<img src={'/img/arrow-down.png'} width={24} height={24} objectFit="cover" />
-                  ) : (<img src={'/img/arrow-down.png'} className="rotate-180" width={24} height={24} objectFit="cover" />)}
+                  {expandFlag ? (<img src={'/img/arrow-down.png'} width={24} height={24} className="object-cover " />
+                  ) : (<img src={'/img/arrow-down.png'} className="object-cover rotate-180" width={24} height={24} />)}
                 </div>
               </div>
               {expandFlag && (

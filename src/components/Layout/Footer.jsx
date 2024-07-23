@@ -14,8 +14,7 @@ export default function Footer() {
               width={200}
               height={100}
               alt="logo"
-              objectFit="fill"
-              className="self-center"
+              className="object-fill self-center"
             />
           </div>
           <div className="hidden md:block w-full">
@@ -42,7 +41,7 @@ export default function Footer() {
                     width={200}
                     height={200}
                     alt="qr_code"
-                    objectFit="cover"
+                    
                     className="self-center"
                   />
                 </div>
@@ -91,7 +90,7 @@ export default function Footer() {
                     width={200}
                     height={200}
                     alt="qr_code"
-                    objectFit="cover"
+                    
                     className="self-center"
                   />
                 </div>
