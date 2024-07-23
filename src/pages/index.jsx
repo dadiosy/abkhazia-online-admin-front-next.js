@@ -11,22 +11,22 @@ const AdminIndex = () => {
                 <div className="px-4 md:px-[8.333333333%]">
                     <div className="grid grid-cols-3 gap-10 my-10">
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="Мета-тег" imgSrc="/img/popular6.png" linkAddress="/meta" />
+                            <ImageBottomText imgDesc="Мета-тег" imgSrc="/img/popular6.png" linkAddress="/meta" />
                         </div>
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="SEO & Текстовый блок" imgSrc="/img/popular1.png" linkAddress="/seo" />
+                            <ImageBottomText imgDesc="SEO & Текстовый блок" imgSrc="/img/popular1.png" linkAddress="/seo" />
                         </div>
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="Направления" imgSrc="/img/popular2.png" linkAddress="/direction" />
+                            <ImageBottomText imgDesc="Направления" imgSrc="/img/popular2.png" linkAddress="/direction" />
                         </div>
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="Блог" imgSrc="/img/popular3.png" linkAddress="/blog" />
+                            <ImageBottomText imgDesc="Блог" imgSrc="/img/popular3.png" linkAddress="/blog" />
                         </div>
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="Достопримечательности" imgSrc="/img/popular4.png" linkAddress="/attraction" />
+                            <ImageBottomText imgDesc="Достопримечательности" imgSrc="/img/popular4.png" linkAddress="/attraction" />
                         </div>
                         <div className="col-span-3 md:col-span-1" >
-                            <imgBottomText imgDesc="FAQ" imgSrc="/img/popular5.png" linkAddress="/faq" />
+                            <ImageBottomText imgDesc="FAQ" imgSrc="/img/popular5.png" linkAddress="/faq" />
                         </div>
                     </div>
                 </div>
