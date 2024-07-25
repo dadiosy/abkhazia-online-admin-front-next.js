@@ -12,7 +12,7 @@ const Editor = dynamic(
         ssr: false
     });
 
-const Wysi = ({ id, setWysiData, getWysiData }) => {
+const Wysi = ({ id, setWysiData = "", getWysiData = () => { } }) => {
     if (typeof window === undefined) return <></>;
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const onEditorStateChange = (newEditorState) => {
