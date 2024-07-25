@@ -14,13 +14,6 @@ export default function Dropdown({ data, customClass }) {
     var saveData = JSON.parse(localStorage.saveData || null) || {};
     setUserInfo(saveData.userInfo);
   }, []);
-  const handleLogOut = () => {
-    var saveData = JSON.parse(localStorage.saveData || null) || {};
-    saveData.userInfo = null;
-    localStorage.saveData = JSON.stringify(saveData);
-    setUserInfo(null);
-    Router.push('/auth/login')
-  }
 
   return (
     <div className='relative'>
@@ -63,9 +56,6 @@ export default function Dropdown({ data, customClass }) {
                   <>
                     <div className='px-4 py-2 text-sm cursor-pointer hover:bg-slate-100' onClick={() => { Router.push('/auth/info') }}>
                       <div className='class-p2'>Профиль</div>
-                    </div>
-                    <div className='px-4 py-2 text-sm cursor-pointer hover:bg-slate-100' onClick={handleLogOut}>
-                      <div className='class-p2'>{userInfo.firstName}{userInfo.lastName}-Выйти</div>
                     </div>
                   </>
                 ) : (

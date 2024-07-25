@@ -69,6 +69,13 @@ const MyInfoPage = () => {
 		passUpdate();
 	}
 
+	const handleLogOut = () => {
+		var saveData = JSON.parse(localStorage.saveData || null) || {};
+		saveData.userInfo = null;
+		localStorage.saveData = JSON.stringify(saveData);
+		setUserInfo(null);
+		Router.push('/auth/login')
+	}
 
 	return (
 		<>
@@ -182,10 +189,13 @@ const MyInfoPage = () => {
 								</div>
 							</div>
 
-							<div className='flex justify-center mt-5'>
+							<div className='flex justify-between mt-5 mb-5'>
 								<button type="button" className="flex w-36 justify-center rounded-md bg-[#FF6432] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#dF5422] "
 									onClick={handleSubmit}>
-									Change Password</button>
+									изменить пароль</button>
+								<button type="button" className="flex w-36 justify-center rounded-md bg-[#FF6432] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#dF5422] "
+									onClick={handleLogOut}>
+									Выйти</button>
 							</div>
 						</div>
 					</div>
