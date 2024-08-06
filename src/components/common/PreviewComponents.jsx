@@ -5,7 +5,6 @@ import OrangeListComponent from "./OrangeListComponent"
 import SubTitleRenderComponent from "./SubTitleRenderComponent"
 
 export default function PreviewComponents({ data }) {
-    console.log('uuu', data)
     switch (data.tool) {
         case 'paragraph':
             return <div dangerouslySetInnerHTML={{
