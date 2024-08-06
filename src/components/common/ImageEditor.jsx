@@ -28,14 +28,18 @@ export default function ImageEditor({ uploadUrl = '', onChange = () => { }, thum
     useEffect(() => {
         if (file) {
             const formData = new FormData()
-            formData.append('thumb', file)
-            axios.post(API_BASE_URL + "/direction/image-upload", formData,
-                { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+            formData.append('image', file)
+            axios.post(API_BASE_URL + "/img/direction", formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userInfo.token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
             )
-                .then(res => res.json())
-                .then(data => {
-                    setThumbURL(data.thumbURL)
-                    onChange({ thumbURL: data.thumbURL, created: true, deleted: false })
+                .then(res => {
+                    setThumbURL(res.data.data)
+                    onChange({ thumbURL: `${API_BASE_URL}/img/direction/${res.data.data}`, created: true, deleted: false })
                 })
                 .catch(error => { console.log(error) })
         }
@@ -53,13 +57,12 @@ export default function ImageEditor({ uploadUrl = '', onChange = () => { }, thum
 
     const handleDelete = () => {
         const fileName = thumbURL?.split('/').pop()
-        axios.delete(API_BASE_URL + "/direction/image-upload",
+        axios.post(API_BASE_URL + "/img/remove", { url: thumbURL },
             { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
         )
-            .then(res => res.json())
             .then(res => {
                 setFile(null)
-                onChange({ thumbURL: thumbURL, created: false, deleted: true })
+                onChange({ thumbURL: null, created: false, deleted: true })
                 setThumbURL(undefined)
             })
             .catch(error => { console.log(error) })
@@ -72,11 +75,11 @@ export default function ImageEditor({ uploadUrl = '', onChange = () => { }, thum
     return (
         <div className={`relative`} id={divId}>
             {thumbURL ? <div className="border border-dashed bg-[#FFFFFF] rounded-lg md:max-w-[277px] h-[136px]" onClick={handleFileInputClick}>
-                <img src={thumbURL} alt="thumb" className="object-cover w-full h-full rounded-lg" />
+                <img src={`${API_BASE_URL}/img/direction/${thumbURL}`} alt="thumb" className="object-cover w-full h-full rounded-lg" />
                 {isCoverImage ? <span className="absolute top-[8px] left-[8px] px-[8px] py-[4px] bg-[#FFFFFF] rounded-[24px] text-p4">Обложка</span> : null}
                 {toggle ? <span className="flex items-center p-[12px] rounded-[48px] bg-[#FFFFFFCC] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <img src="icon/Refresh.svg" className="w-[20px] h-auto sm:mr-[16px] cursor-pointer" alt="refresh" onClick={handleRefresh} />
-                    <img src="icon/trash.svg" className="w-[20px] h-auto cursor-pointer" alt="trash" onClick={handleDelete} />
+                    <img src="/icon/Refresh.svg" className="w-[20px] h-auto sm:mr-[16px] cursor-pointer" alt="refresh" onClick={handleRefresh} />
+                    <img src="/icon/trash.svg" className="w-[20px] h-auto cursor-pointer" alt="trash" onClick={handleDelete} />
                 </span> : null}
             </div> :
                 <div>
