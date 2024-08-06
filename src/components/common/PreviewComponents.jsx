@@ -1,3 +1,4 @@
+import HintRenderComponent from "./HintRenderComponent"
 import OrangeListComponent from "./OrangeListComponent"
 
 export default function PreviewComponents({ data }) {
@@ -9,6 +10,8 @@ export default function PreviewComponents({ data }) {
             }} ></div>
         case 'orange_list':
             return <OrangeListComponent data={data.data} />
+        case 'hint':
+            return <HintRenderComponent data={data.data} />
         default:
             return null
     }

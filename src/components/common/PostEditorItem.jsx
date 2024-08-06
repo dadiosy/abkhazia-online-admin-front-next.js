@@ -3,6 +3,7 @@ import { Select } from "@chakra-ui/react";
 import SimpleEditor from "./SimpleEditor";
 import OrangeList from "./OrangeList";
 import OrangeResultExample from './OrangeResultExample';
+import HintRenderComponent from "./HintRenderComponent";
 
 const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
     const handleChange = (tool, data) => {
@@ -12,6 +13,8 @@ const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
         return <SimpleEditor onChange={data => handleChange('paragraph', data)} />
     } else if (tool === 'orange_list') {
         return <OrangeList onChange={data => handleChange('orange_list', data)} />
+    } else if (tool === 'hint') {
+        return <SimpleEditor onChange={data => handleChange('hint', data)} />
     }
 }
 
@@ -20,6 +23,8 @@ const ResultExampleComponent = ({ tool = 'paragraph' }) => {
         return <SimpleEditorResultExample />
     } else if (tool === 'orange_list') {
         return <OrangeResultExample />
+    } else if (tool === 'hint') {
+        return <HintRenderComponent data='<div>example data</div>' />
     }
 }
 
