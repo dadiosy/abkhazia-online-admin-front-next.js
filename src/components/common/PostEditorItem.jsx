@@ -10,6 +10,7 @@ import SubTitleEditor from "./SubTitleEditor";
 import SubTitleRenderComponent from "./SubTitleRenderComponent";
 import LinkButtonRender from "./LinkButtonRender";
 import LinkButtonEditor from "./LinkButtonEditor";
+import ImageEditor from "./ImageEditor";
 
 const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
     const handleChange = (tool, data) => {
@@ -27,6 +28,8 @@ const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
         return <SubTitleEditor onChange={data => handleChange('subtitle', data)} />
     } else if (tool === 'link_button') {
         return <LinkButtonEditor onChange={data => handleChange('link_button', data)} />
+    } else if (tool === 'image') {
+        return <ImageEditor onChange={data => handleChange('image', data)} />
     }
 }
 
@@ -49,7 +52,7 @@ const ResultExampleComponent = ({ tool = 'paragraph' }) => {
 const SimpleEditorResultExample = () => <div><p>first paragraph.</p><p>next paragraph.</p></div>
 
 export default function PostEditorItem({ onChange = () => { } }) {
-    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image/video', 'subtitle']
+    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image', 'subtitle']
     const [tool, setTool] = useState('paragraph')
     const handleToolChange = e => setTool(e.target.value)
     const handleChange = (tool, data) => {
