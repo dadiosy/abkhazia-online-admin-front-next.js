@@ -20,13 +20,16 @@ module.exports = {
         'sm': '14px',
         'xs': '12px',
       },
-      width:{
+      width: {
 
       },
       screens: {
         zero: "1440px",
         first: "850px",
       },
+      colors: {
+        accent: '#FF6432'
+      }
     },
   },
   plugins: [],
