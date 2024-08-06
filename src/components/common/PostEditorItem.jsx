@@ -6,6 +6,8 @@ import OrangeResultExample from './OrangeResultExample';
 import HintRenderComponent from "./HintRenderComponent";
 import IconTitleEditor from "./IconTitleEditor";
 import IconTitleRenderComponent from "./IconTitleRenderComponent";
+import SubTitleEditor from "./SubTitleEditor";
+import SubTitleRenderComponent from "./SubTitleRenderComponent";
 
 const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
     const handleChange = (tool, data) => {
@@ -19,6 +21,8 @@ const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
         return <SimpleEditor onChange={data => handleChange('hint', data)} />
     } else if (tool === 'icon_title') {
         return <IconTitleEditor onChange={data => handleChange('icon_title', data)} />
+    } else if (tool === 'subtitle') {
+        return <SubTitleEditor onChange={data => handleChange('subtitle', data)} />
     }
 }
 
@@ -31,13 +35,15 @@ const ResultExampleComponent = ({ tool = 'paragraph' }) => {
         return <HintRenderComponent data='<div>example data</div>' />
     } else if (tool === 'icon_title') {
         return <IconTitleRenderComponent data={{ icon: '/icon/train.svg', title: 'title', sm: 'md' }} />
+    } else if (tool === 'subtitle') {
+        return <SubTitleRenderComponent data={{ title: 'sub title', size: 'level1' }} />
     }
 }
 
 const SimpleEditorResultExample = () => <div><p>first paragraph.</p><p>next paragraph.</p></div>
 
 export default function PostEditorItem({ onChange = () => { } }) {
-    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image/video']
+    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image/video', 'subtitle']
     const [tool, setTool] = useState('paragraph')
     const handleToolChange = e => setTool(e.target.value)
     const handleChange = (tool, data) => {

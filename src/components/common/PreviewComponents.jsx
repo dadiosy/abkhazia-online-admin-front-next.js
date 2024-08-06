@@ -1,6 +1,7 @@
 import HintRenderComponent from "./HintRenderComponent"
 import IconTitleRenderComponent from "./IconTitleRenderComponent"
 import OrangeListComponent from "./OrangeListComponent"
+import SubTitleRenderComponent from "./SubTitleRenderComponent"
 
 export default function PreviewComponents({ data }) {
     console.log('uuu', data)
@@ -15,6 +16,8 @@ export default function PreviewComponents({ data }) {
             return <HintRenderComponent data={data.data} />
         case 'icon_title':
             return <IconTitleRenderComponent data={data.data} />
+        case 'subtitle':
+            return <SubTitleRenderComponent data={data.data} />
         default:
             return null
     }
