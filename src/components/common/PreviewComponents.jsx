@@ -1,5 +1,6 @@
 import HintRenderComponent from "./HintRenderComponent"
 import IconTitleRenderComponent from "./IconTitleRenderComponent"
+import LinkButtonRender from "./LinkButtonRender"
 import OrangeListComponent from "./OrangeListComponent"
 import SubTitleRenderComponent from "./SubTitleRenderComponent"
 
@@ -18,6 +19,8 @@ export default function PreviewComponents({ data }) {
             return <IconTitleRenderComponent data={data.data} />
         case 'subtitle':
             return <SubTitleRenderComponent data={data.data} />
+        case 'link_button':
+            return <LinkButtonRender data={data.data} />
         default:
             return null
     }

@@ -8,6 +8,8 @@ import IconTitleEditor from "./IconTitleEditor";
 import IconTitleRenderComponent from "./IconTitleRenderComponent";
 import SubTitleEditor from "./SubTitleEditor";
 import SubTitleRenderComponent from "./SubTitleRenderComponent";
+import LinkButtonRender from "./LinkButtonRender";
+import LinkButtonEditor from "./LinkButtonEditor";
 
 const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
     const handleChange = (tool, data) => {
@@ -23,6 +25,8 @@ const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
         return <IconTitleEditor onChange={data => handleChange('icon_title', data)} />
     } else if (tool === 'subtitle') {
         return <SubTitleEditor onChange={data => handleChange('subtitle', data)} />
+    } else if (tool === 'link_button') {
+        return <LinkButtonEditor onChange={data => handleChange('link_button', data)} />
     }
 }
 
@@ -37,6 +41,8 @@ const ResultExampleComponent = ({ tool = 'paragraph' }) => {
         return <IconTitleRenderComponent data={{ icon: '/icon/train.svg', title: 'title', sm: 'md' }} />
     } else if (tool === 'subtitle') {
         return <SubTitleRenderComponent data={{ title: 'sub title', size: 'level1' }} />
+    } else if (tool === 'link_button') {
+        return <LinkButtonRender data={{ caption: 'button', link: '' }} />
     }
 }
 
