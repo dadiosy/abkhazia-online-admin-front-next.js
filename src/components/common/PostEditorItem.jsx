@@ -4,6 +4,8 @@ import SimpleEditor from "./SimpleEditor";
 import OrangeList from "./OrangeList";
 import OrangeResultExample from './OrangeResultExample';
 import HintRenderComponent from "./HintRenderComponent";
+import IconTitleEditor from "./IconTitleEditor";
+import IconTitleRenderComponent from "./IconTitleRenderComponent";
 
 const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
     const handleChange = (tool, data) => {
@@ -15,6 +17,8 @@ const ToolComponent = ({ tool = 'paragraph', onChange = () => { } }) => {
         return <OrangeList onChange={data => handleChange('orange_list', data)} />
     } else if (tool === 'hint') {
         return <SimpleEditor onChange={data => handleChange('hint', data)} />
+    } else if (tool === 'icon_title') {
+        return <IconTitleEditor onChange={data => handleChange('icon_title', data)} />
     }
 }
 
@@ -25,13 +29,15 @@ const ResultExampleComponent = ({ tool = 'paragraph' }) => {
         return <OrangeResultExample />
     } else if (tool === 'hint') {
         return <HintRenderComponent data='<div>example data</div>' />
+    } else if (tool === 'icon_title') {
+        return <IconTitleRenderComponent data={{ icon: '/icon/train.svg', title: 'title', sm: 'md' }} />
     }
 }
 
 const SimpleEditorResultExample = () => <div><p>first paragraph.</p><p>next paragraph.</p></div>
 
 export default function PostEditorItem({ onChange = () => { } }) {
-    const toolOptions = ['paragraph', 'orange_list', 'icon_header', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image/video']
+    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image/video']
     const [tool, setTool] = useState('paragraph')
     const handleToolChange = e => setTool(e.target.value)
     const handleChange = (tool, data) => {
@@ -40,7 +46,7 @@ export default function PostEditorItem({ onChange = () => { } }) {
     return (
         <div className="flex md:flex-row flex-col">
             <div className="w-[200px]">
-                <Select placeholder='выберите инструмент' onChange={handleToolChange}>
+                <Select placeholder='выберите инструмент' onChange={handleToolChange} size="sm">
                     {
                         toolOptions.map((option, i) => <option key={i} value={option}>{option}</option>)
                     }
