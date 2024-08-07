@@ -9,12 +9,16 @@ export default function IconTitleRenderComponent({ data }) {
         md: 'md:w-[36px] w-[24px] h-auto md:mr-[12px] mr-[8px]'
     }
 
-    return (
-        <div>
-            <div className="flex items-center">
-                {data.icon ? <img src={data.icon} alt="icon" className={data.size == 'md' ? imgStyle.md : imgStyle.sm} /> : null}
-                <h4 className={data.size == 'md' ? titleStyle.md : titleStyle.sm}>{data.title}</h4>
+    return (<>
+        {
+            data &&
+            <div>
+                <div className="flex items-center mt-4 md:mt-8">
+                    {data.icon ? <img src={data.icon} alt="icon" className={data.size == 'md' ? imgStyle.md : imgStyle.sm} /> : null}
+                    <h4 className={data.size == 'md' ? titleStyle.md : titleStyle.sm}>{data.title}</h4>
+                </div>
             </div>
-        </div>
+        }
+    </>
     )
 }

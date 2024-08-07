@@ -1,27 +1,10 @@
 import { Input } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 
-export default function LinkButtonEditor({ onChange = () => { } }) {
-    const [caption, setCaption] = useState('')
-    const [link, setLink] = useState('')
-
-    const handleChange = e => {
-        setCaption(e.target.value)
-    }
-    const handleLinkChange = e => {
-        setLink(e.target.value)
-    }
-
-    useEffect(() => {
-        onChange({ caption, link })
-    }, [caption, link])
-
+export default function LinkButtonEditor({ data = { caption: "", link: "" }, onChange = () => { } }) {
     return (
-        <div>
-            <label>caption</label>
-            <Input value={caption} onChange={handleChange} size="sm" />
-            <label>link</label>
-            <Input value={link} onChange={handleLinkChange} size="sm" />
+        <div className="space-y-1">
+            <Input placeholder="caption" value={data.caption} onChange={e => onChange({ ...data, caption: e.target.value })} size="sm" />
+            <Input placeholder="link" value={data.link} onChange={e => onChange({ ...data, link: e.target.value })} size="sm" />
         </div>
     )
 }

@@ -8,7 +8,7 @@ import SubTitleRenderComponent from "./SubTitleRenderComponent"
 export default function PreviewComponents({ data }) {
     switch (data.tool) {
         case 'paragraph':
-            return <div dangerouslySetInnerHTML={{
+            return <div className="mt-2 md:mt-4 md:text-xl" dangerouslySetInnerHTML={{
                 __html: data.data
             }} ></div>
         case 'orange_list':

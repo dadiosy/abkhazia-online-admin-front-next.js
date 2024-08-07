@@ -9,6 +9,6 @@ export default function LinkButtonRender({ data = { caption: '', link: '' } }) {
     }
 
     return (
-        <button className="border-accent border-[1.5px] rounded-[8px] md:w-fit w-full text-accent px-[20px] py-[10px]" onClick={handleClick}>{caption}</button>
+        <button className="border-accent border-[1.5px] rounded-[8px] md:w-fit w-full text-accent mt-4 px-[20px] py-[10px]" onClick={handleClick}>{caption}</button>
     )
 }

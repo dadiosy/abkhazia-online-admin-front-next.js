@@ -1,6 +1,10 @@
 
-export default function ImageRenderComponent({data}) {
+export default function ImageRenderComponent({ data }) {
 	return (
-		<img src={data.thumbURL} className="w-full"/>
+		<>
+			{data &&
+				<img src={data.thumbURL} className="w-full mt-4 md:mt-6" />
+			}
+		</>
 	)
 }

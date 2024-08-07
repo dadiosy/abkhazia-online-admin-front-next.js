@@ -5,8 +5,8 @@ import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
-import { ToastContainer, toast } from 'react-toastify';
-import { CloseButton, IconButton } from '@chakra-ui/react'
+import { toast } from 'react-toastify';
+import { CloseButton } from '@chakra-ui/react'
 import Image from "next/image";
 import Router from "next/router";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'

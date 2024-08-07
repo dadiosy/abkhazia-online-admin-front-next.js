@@ -1,8 +1,8 @@
-export default function SubTitleRenderComponent({ data }) {
+export default function SubTitleRenderComponent({ data = { title: "", size: "level1" } }) {
     const { title, size } = data
     const textStyle = {
-        level1: 'md:text-h3 text-h5 md:mb-[32px] mb-[12px]',
-        level2: 'md:text-h4 text-h6 md:mb-[24px] mb-[8px]'
+        level1: 'md:text-h3 text-h5 mt-[32px] md:mt-[80px]',
+        level2: 'md:text-h4 text-h6 mt-[24px] md:mt-[56px]'
     }
     return (
         <div>
