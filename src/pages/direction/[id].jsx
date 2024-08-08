@@ -26,15 +26,10 @@ const DirectionDetailPage = () => {
     'heading': '',
     'bgImg': '',
     'uniqueLink': '',
-    'latitude': '',
-    'longitude': '',
     'contents': [{
       'question': '',
-      'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
-    }],
-    'images': [
-      // { "id": 3, "url": "test" },
-    ]
+      'content': ''
+    }]
   });
 
   useEffect(() => {
@@ -58,9 +53,6 @@ const DirectionDetailPage = () => {
   const handleTextChange = (e) => {
     setDataDetail({ ...dataDetail, [e.target.name]: e.target.value });
   }
-  const getXY = (XY) => {
-    setDataDetail({ ...dataDetail, ['latitude']: XY[0], ['longitude']: XY[1] });
-  }
 
   const handleDescriptionChange = (e) => {
     setDataDetail({ ...dataDetail, description: e.target.value })
@@ -76,9 +68,8 @@ const DirectionDetailPage = () => {
     if (dataDetail.description == "") { toast.error('входное Описание'); return; }
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
     if (dataDetail.uniqueLink == "") { toast.error('URL segment need'); return; }
-
-    if (dataDetail.latitude == "") { toast.error('ввод Широта'); return; }
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
+
     if (detailId != 'add') {
       axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
@@ -150,19 +141,6 @@ const DirectionDetailPage = () => {
                 <div className="flex flex-row">
                   <div className="my-2 mx-5 w-32 font-bold">Уникальный сегмент URL:</div>
                   <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
-                </div>
-                <div className="flex flex-row justify-between">
-                  <div className="flex flex-row">
-                    <div className="my-2 mx-5 w-32 font-bold">Широта:</div>
-                    <input name="latitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.latitude} />
-                  </div>
-                  <div className="flex flex-row  w-1/2">
-                    <div className="my-2 mx-5 w-32 font-bold">Долгота:</div>
-                    <input name="longitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.longitude} />
-                  </div>
-                </div>
-                <div>
-                  <YMapProvider className="rounded-xl" mapX={dataDetail?.latitude} mapY={dataDetail?.longitude} onChildData={getXY} />
                 </div>
               </div>
             </div>

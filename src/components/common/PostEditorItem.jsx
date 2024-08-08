@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Select } from "@chakra-ui/react";
 import SimpleEditor from "./SimpleEditor";
 import OrangeList from "./OrangeList";
@@ -6,25 +5,23 @@ import IconTitleEditor from "./IconTitleEditor";
 import SubTitleEditor from "./SubTitleEditor";
 import LinkButtonEditor from "./LinkButtonEditor";
 import ImageEditor from "./ImageEditor";
+import LocationEditor from "./LocationEditor";
 
 const ToolComponent = ({ tool = 'paragraph', data = undefined, onChange = () => { } }) => {
     const handleChange = (tool, data) => {
         onChange(tool, data)
     }
-    if (tool === 'paragraph') {
-        return <SimpleEditor data={data} onChange={data => handleChange('paragraph', data)} />
-    } else if (tool === 'orange_list') {
-        return <OrangeList data={data} onChange={data => handleChange('orange_list', data)} />
-    } else if (tool === 'hint') {
-        return <SimpleEditor data={data} onChange={data => handleChange('hint', data)} />
-    } else if (tool === 'icon_title') {
-        return <IconTitleEditor data={data} onChange={data => handleChange('icon_title', data)} />
-    } else if (tool === 'subtitle') {
-        return <SubTitleEditor data={data} onChange={data => handleChange('subtitle', data)} />
-    } else if (tool === 'link_button') {
-        return <LinkButtonEditor data={data} onChange={data => handleChange('link_button', data)} />
-    } else if (tool === 'image') {
-        return <ImageEditor data={data} onChange={data => handleChange('image', data)} />
+    switch (tool) {
+        case 'paragraph': return <SimpleEditor data={data} onChange={data => handleChange('paragraph', data)} />;
+        case 'orange_list': return <OrangeList data={data} onChange={data => handleChange('orange_list', data)} />
+        case 'hint': return <SimpleEditor data={data} onChange={data => handleChange('hint', data)} />
+        case 'icon_title': return <IconTitleEditor data={data} onChange={data => handleChange('icon_title', data)} />
+        case 'subtitle': return <SubTitleEditor data={data} onChange={data => handleChange('subtitle', data)} />
+        case 'link_button': return <LinkButtonEditor data={data} onChange={data => handleChange('link_button', data)} />
+        case 'image': return <ImageEditor data={data} onChange={data => handleChange('image', data)} />
+        case 'location': return <LocationEditor data={data} onChange={data => handleChange('location', data)} />
+        default:
+            break;
     }
 }
 
@@ -37,6 +34,7 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
         { label: "кнопка_ссылки", value: 'link_button' },
         { label: "изображение", value: 'image' },
         { label: "субтитры", value: 'subtitle' },
+        { label: "location", value: 'location' },
     ]
     const handleToolChange = (e) => {
         onChange(e.target.value)
