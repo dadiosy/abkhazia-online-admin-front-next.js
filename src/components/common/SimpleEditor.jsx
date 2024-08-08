@@ -1,20 +1,12 @@
-import { useEffect, useState } from "react"
 import Editor from 'react-simple-wysiwyg';
 
-export default function SimpleEditor({ onChange = () => { } }) {
-    const [html, setHtml] = useState('');
-
+export default function SimpleEditor({ data = "", onChange = () => { } }) {
     const handleChange = (e) => {
-        setHtml(e.target.value)
+        onChange(e.target.value)
     }
-
-    useEffect(() => {
-        onChange(html)
-    }, [html])
-
     return (
         <div>
-            <Editor value={html} onChange={handleChange} />
+            <Editor value={data} onChange={handleChange} />
         </div>
     )
 }

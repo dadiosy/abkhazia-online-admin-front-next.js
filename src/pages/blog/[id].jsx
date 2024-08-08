@@ -1,33 +1,26 @@
 'use client'
 import { NextSeo } from "next-seo";
 import Router, { useRouter } from "next/router";
-import { useRef, useState, useEffect } from "react"
-import Link from "next/link";
+import { useState, useEffect } from "react"
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import Image from "next/image";
+import { toast } from 'react-toastify';
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import ActivePin from "../../../public/img/SVG/ActivePin";
-import InActivePin from "../../../public/img/SVG/InActivePin";
-import { API_BASE_URL, BtnActive, BtnActive14, BtnMiniCss, normalInputCss } from '../../const/CustomConsts';
+import { API_BASE_URL, BtnActive, normalInputCss } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
-import { Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, } from '@chakra-ui/react'
-import { Button, Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider, } from '@chakra-ui/react'
-import DropzoneImage from '../components/common/dropzoneImage';
-import IconList from "../components/common/IconList"
+import { Menu, MenuButton, MenuList, MenuItemOption, MenuOptionGroup, } from '@chakra-ui/react'
+import Editor from 'react-simple-wysiwyg';
+import ImageEditor from "../../components/common/ImageEditor";
+import PostEditor from "../../components/common/PostEditor";
+import EditorPreview from "../../components/common/BlogEditorPreview";
+
+
 const index = () => {
-  const [isOpenDelete, setIsOpenDelete] = useState(false);
-  const [selContentId, setSelContentId] = useState(null);
   const [userInfo, setUserInfo] = useState();
-  const [pageLocation, SetpageLocation] = useState(0);
   const [loading, setLoading] = useState(false);
   const [seoData, setSeoData] = useState([]);
+  const [contents, setContents] = useState([])
   const [seoChecked, setSeoChecked] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenNew, setIsOpenNew] = useState(false);
-  const [removeArray, setRemoveArray] = useState([]);
   const router = useRouter();
   const detailId = router.query.id;
 
@@ -45,17 +38,16 @@ const index = () => {
 
 
   useEffect(() => {
-    if (detailId >= 0) {
-      axios.get(API_BASE_URL + '/blog/detail/' + detailId,
-        {
-          // 'id': detailId
-        }).then((res) => {
-          setDataDetail(res.data.data);
-        }).catch((err) => {
-          console.log(err);
-        });
+    if (detailId && detailId != 'add') {
+      axios.get(API_BASE_URL + '/blog/detail/' + detailId, {}).then((res) => {
+        const temp = JSON.parse(res.data.data.contents[0].content)
+        setContents(temp)
+        setDataDetail(res.data.data);
+      }).catch((err) => {
+        console.log(err);
+      });
     }
-  }, [detailId])
+  }, [])
 
   useEffect(() => {
     var saveData = JSON.parse(localStorage?.saveData || null) || {};
@@ -80,71 +72,16 @@ const index = () => {
   const handleTextChange = (e) => {
     setDataDetail({ ...dataDetail, [e.target.name]: e.target.value });
   }
-  const handleArrayTextChange = (e, ind) => {
-    if (ind >= 0) {
-      setDataDetail({
-        ...dataDetail,
-        contents: dataDetail.contents.map((item, index) => {
-          if (index === ind) {
-            return { ...item, 'question': e.target.value };
-          }
-          return item;
-        })
-      });
-    }
-  }
-  const handleAddContent = () => {
-    setDataDetail({
-      ...dataDetail,
-      contents: [
-        ...dataDetail.contents,
-        {
-          'question': '',
-          'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
-        }
-      ]
-    });
-  }
-  const handleDelete = () => {
-    axios.delete(API_BASE_URL + "/blog/" + detailId,
-      // { 'id': detailId },
-      { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
-    ).then((res) => {
-      if (res.data.statusCode == 200) {
-        toast.success('Удалить успех');
-        Router.push('/blog');
-      }
-    }).catch((err) => {
-      if (err.response?.status == 401) {
-        toast.error("пожалуйста, войдите в систему");
-        Router.push('/auth/login');
-      }
-      console.log(err);
-    })
-  }
-  const handleCreate = () => {
+
+  const handleSave = () => {
     if (dataDetail.title == "") { toast.error('введите Заголовок'); return; }
     if (dataDetail.description == "") { toast.error('входное Описание'); return; }
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
     if (dataDetail.seos.length == 0) { toast.error('выбирать SEO'); return; }
     if (detailId != 'add') {
-      let direction1 = {
-        "title": dataDetail.title,
-        "description": dataDetail.description,
-        "bgImg": dataDetail.bgImg,
-      };
-      let update1 = dataDetail.contents.filter((v) => v.id != null);
-      let new1 = dataDetail.contents.filter((v) => v.id == null);
-      let updateData = {
-        'blog': direction1,
-        'contents': {},
-        'seos': dataDetail.seos
-      }
-      if (new1.length > 0) updateData.contents.new = new1;
-      if (update1.length > 0) updateData.contents.update = update1;
-      if (removeArray.length > 0) updateData.contents.remove = removeArray;
       axios.put(API_BASE_URL + "/blog/" + detailId,
-        { ...updateData }
+        { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
+        { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
         if (res.data.statusCode == 200) {
           Router.push('/blog');
@@ -159,7 +96,7 @@ const index = () => {
       })
     } else {
       axios.post(API_BASE_URL + "/blog/create",
-        { ...dataDetail },
+        { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
         if (res.data.statusCode == 400) toast.error(res.data.message);
@@ -174,7 +111,6 @@ const index = () => {
               'content': ''
             }],
             'images': [
-              // { "id": 3, "url": "test" },
             ],
             'seos': [
               // { "id": 4, "keyword": "лето11", },
@@ -190,24 +126,16 @@ const index = () => {
         console.log(err);
       })
     }
+  }
+  const handleDescriptionChange = (e) => {
+    setDataDetail({ ...dataDetail, description: e.target.value })
+  }
 
+  const handleChangeImage = (data) => {
+    const { thumbURL } = data
+    setDataDetail({ ...dataDetail, bgImg: thumbURL })
   }
-  const handleDelClick = () => {
-    setIsOpenDelete(false);
-    handleContentsDel(selContentId);
-  }
-  const handleContentsDel = () => {
-    let tempArray = removeArray;
-    if (selContentId) tempArray.push(selContentId);
-    setRemoveArray([...tempArray])
 
-    if (dataDetail.contents.length > 1) {
-      setDataDetail({
-        ...dataDetail,
-        contents: dataDetail.contents.filter((v, index) => v.id !== selContentId)
-      });
-    }
-  }
   const handleMemu = (ind, id, keyword) => {
     const updatedSeoChecked = [...seoChecked]; // Create a copy of seoChecked array
     updatedSeoChecked.forEach((value, index) => {
@@ -226,33 +154,10 @@ const index = () => {
       seos: [...setClickSeo]
     });
   }
-  const handleArrayTextAreaChange = (e, ind) => {
-    if (ind >= 0) {
-      setDataDetail({
-        ...dataDetail,
-        contents: dataDetail.contents.map((item, index) => {
-          if (index === ind) {
-            return { ...item, 'content': e.target.value };
-          }
-          return item;
-        })
-      });
-    }
+  const handleChange = (_data) => {
+    setContents(_data)
   }
-  const [modalTitle, setModalTitle] = useState('');
-  const [isOpenAddText, setIsOpenAddText] = useState(false);
-  const [addText, setAddText] = useState("");
-  const [selText, setSelText] = useState('');
-  const textareaRefs = Array(10).fill(null).map(() => useRef(null));
-  const [selectTextAreaIndex, setSelectTextAreaIndex] = useState(0);
-  const [tagName, setTagName] = useState('');
-  const [isOpenAddBooking, setIsOpenAddBooking] = useState(false);
-  const [bookingText, setBookingText] = useState(Array(8).fill(''));
-  const handleBookingText = (e, ind) => {
-    const tempBookingText = [...bookingText];
-    tempBookingText[ind] = e.target.value;
-    setBookingText(tempBookingText);
-  }
+<<<<<<< HEAD
   const handleInsertText = () => {
     const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex]?.current;
     const contentText = textareaRefs[selectTextAreaIndex].current.value;
@@ -498,6 +403,8 @@ const index = () => {
     setIsOpenAddText(false);
     setIsOpenAddBooking(false);
   };
+=======
+>>>>>>> 697053c8ab8163a5d04047d1c43ef449e116ff11
 
   return (
     <>
@@ -505,6 +412,7 @@ const index = () => {
       <NavBar />
       <div className="flex flex-col container mx-auto max-w-[1440px] mt-[60px] md:mt-[94px]">
         {loading ? (<div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div>) : null}
+<<<<<<< HEAD
         <div className="flex flex-row justify-center gap-5 px-4 md:px-[8.333333333%] ">
           <div className="flex w-1/3">
             <div className="flex justify-center">
@@ -520,28 +428,31 @@ const index = () => {
             </div>
           </div>
           <div className="flex flex-col w-2/3">
+=======
+        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-5">
+          <div className="flex flex-col">
+>>>>>>> 697053c8ab8163a5d04047d1c43ef449e116ff11
             <div className="flex flex-col gap-3">
               <div className="flex flex-row">
                 <div className="my-2 mx-5 w-32 font-bold">Название:</div>
                 <input name="title" autoFocus required onChange={handleTextChange} className={normalInputCss} value={dataDetail.title} />
               </div>
-              <div className="flex flex-row">
+              <div className="flex flex-grow">
                 <div className="my-2 mx-5 w-32 font-bold">Описание:</div>
-                {/* <input name="description" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.description} /> */}
-                <textarea className="border border-gray-200 shadow-md p-2 w-full text-md rounded-lg" placeholder="" rows={2} cols={40}
-                  name="description"
-                  value={dataDetail.description}
-                  onChange={handleTextChange}
-                />
+                <div className="w-full">
+                  <Editor value={dataDetail.description} onChange={handleDescriptionChange} style={{ height: 200 }} />
+                </div>
               </div>
               <div className="flex flex-row">
-                <div className="my-2 mx-5 w-32 font-bold leading-3">Фоновое изображение:</div>
-                <input name="bgImg" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.bgImg} />
+                <div className="my-2 mx-5 w-32 font-bold">Фоновое изображение:</div>
+                <div className="w-full">
+                  <ImageEditor data={{ thumbURL: dataDetail.bgImg }} onChange={handleChangeImage} />
+                </div>
               </div>
               <div className="flex flex-row justify-center">
                 <Menu closeOnSelect={false}>
                   <MenuButton>
-                    <div className={BtnActive}>Select Seo</div>
+                    <div className={BtnActive}>Выбрать SEO</div>
                   </MenuButton>
                   <MenuList minWidth='180px'>
                     <MenuOptionGroup title='Select Seos' type='checkbox'>
@@ -552,193 +463,20 @@ const index = () => {
                   </MenuList>
                 </Menu>
               </div>
-              {(dataDetail.contents?.length > 0) && (
-                <Accordion allowToggle>
-                  {dataDetail.contents?.map((v, i) => (
-                    <AccordionItem key={i} >
-                      <AccordionButton>
-                        <Box as='span' flex='1' textAlign='left' className="font-bold flex flex-row justify-between h-[40px]">
-                          <input id="name" name="name" value={v.question}
-                            className="text-lg px-2 border border-red-200 rounded-sm shadow-lg w-4/5"
-                            onClick={(e) => { e.stopPropagation(); }}
-                            onChange={(e) => handleArrayTextChange(e, i)} />
-                          <div className="mr-5 w-10 bg-red-100 hover:bg-red-300 text-center rounded-full hover:shadow-md"
-                            onClick={(e) => { e.stopPropagation(); setSelContentId(v.id); setIsOpenDelete(true); }}
-                          ><span className="flex justify-center mt-2">X</span></div>
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4}>
-
-                        <div className="flex flex-row justify-between pb-3">
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('вставить текст');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('p');
-                              setIsOpenAddText(true);
-                            }}>
-                            Текст</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить жирный текст');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('b');
-                              setIsOpenAddText(true);
-                            }}>
-                            Жирный</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст тега h4');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex]?.current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('h4');
-                              setIsOpenAddText(true);
-                            }}>
-                            h4</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст тега h5');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('h5');
-                              setIsOpenAddText(true);
-                            }}>
-                            h5</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст списка');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('li');
-                              setIsOpenAddText(true);
-                            }}>
-                            Список</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('вставьте адрес ссылки');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('a');
-                              setIsOpenAddText(true);
-                            }}>
-                            Ссылка</button>
-                        </div>
-
-                        <div className="flex flex-row justify-between pb-3">
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить адрес ссылки на изображение : https://daisa.ru/api/direction/1716791111323.png');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('img');
-                              setIsOpenAddText(true);
-                            }}>
-                            Картинка</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст подсказки');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('hint');
-                              setIsOpenAddText(true);
-                            }}>
-                            Подсказка</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст кнопки');
-                              const { selectionStart, selectionEnd } = textareaRefs[selectTextAreaIndex].current;
-                              const contentText = textareaRefs[selectTextAreaIndex].current.value;
-                              const selText = contentText.substring(selectionStart, selectionEnd);
-                              setSelText(selText);
-                              setTagName('button');
-                              setIsOpenAddText(true);
-                            }}>
-                            Кнопка</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст бронирования');
-                              setTagName('booking');
-                              setIsOpenAddBooking(true);
-                            }}>
-                            Бронирование</button>
-                          <button className={BtnMiniCss}
-                            onClick={() => {
-                              setSelectTextAreaIndex(i);
-                              setModalTitle('Вставить текст отеля');
-                              setTagName('hotel');
-                              setIsOpenAddBooking(true);
-                            }}>
-                            Введение в отель</button>
-                        </div>
-
-                        <textarea className="border border-gray-200 shadow-md p-2 w-full text-md rounded-lg overflow-x-auto" placeholder="" wrap="off" rows={10} cols={40}
-                          ref={textareaRefs[i]}
-                          id={i}
-                          value={v.content}
-                          onChange={(e) => { handleArrayTextAreaChange(e, i) }}
-                        />
-
-                        <div className="text-[20px] detail-custom-css border-2 rounded-md p-2 shadow-md h-[300px] overflow-y-auto">
-                          <div dangerouslySetInnerHTML={{ __html: v.content }} className="bg-gray-200" />
-                        </div>
-
-                      </AccordionPanel>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              )}
             </div>
-            <div className="flex justify-center mt-2">
-              <button className={BtnActive} onClick={handleAddContent}>Добавить элемент</button>
-            </div>
+          </div>
+
+          <div className="flex">
+            <PostEditor data={contents} onChange={handleChange} />
           </div>
         </div>
         <div className="flex justify-center gap-x-10 my-10">
-          <button className={BtnActive} onClick={() => { Router.push('/blog') }}>
-            Назад</button>
-
-          <button className={BtnActive}
-            onClick={handleCreate}>
+          <button className={BtnActive} onClick={() => { Router.push('/blog') }}>Назад</button>
+          <button className={BtnActive} onClick={handleSave}>
             {detailId ? 'Сохранить' : 'Создавать'}
           </button>
-
-          <button className={BtnActive}
-            onClick={() => { setIsOpen(true) }}>
-            Превью</button>
-
-          <button className={BtnActive}
-            onClick={() => { setIsOpenNew(true) }}>
-            Удалить</button>
         </div>
+<<<<<<< HEAD
         <Modal isOpen={isOpenAddBooking} onClose={() => { setIsOpenAddBooking(false) }} size="3xl">
           <ModalOverlay />
           <ModalContent>
@@ -1011,6 +749,9 @@ const index = () => {
           </ModalContent>
         </Modal>
 
+=======
+        <EditorPreview data={contents} dataDetail={dataDetail} />
+>>>>>>> 697053c8ab8163a5d04047d1c43ef449e116ff11
       </div >
       <Footer />
     </>

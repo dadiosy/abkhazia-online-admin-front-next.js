@@ -2,14 +2,25 @@ import { useEffect, useState } from 'react'
 import PostEditorItem from './PostEditorItem'
 import { Button } from "@chakra-ui/react";
 
-export default function PostEditor({ onChange = () => { } }) {
-    const [data, setData] = useState([])
+export default function PostEditor({ data = [], onChange = () => { } }) {
     const handleAddItem = () => {
-        setData(data.concat({ tool: 'paragraph', data: '' }))
+        onChange(data.concat({ tool: 'paragraph', data: '' }))
     }
 
     const handleChange = (tool, _data, i) => {
-        setData(data.map((item, idx) => idx === i ? ({ tool, data: _data }) : item))
+        onChange(data.map((item, idx) => idx === i ? ({ tool, data: _data }) : item))
+    }
+
+    const onRemove = (index) => {
+        const newData = [...data]
+        newData.splice(index, 1)
+        onChange(newData)
+    }
+    const onInsert = (index) => {
+        const newDatum = { tool: 'paragraph', data: '' }
+        const newData = [...data]
+        newData.splice(index, 0, newDatum)
+        onChange(newData)
     }
 
     useEffect(() => {
@@ -18,13 +29,18 @@ export default function PostEditor({ onChange = () => { } }) {
 
     return (
         <div>
-            <div>
+            <div className='space-y-3'>
                 {data.map((item, i) => {
-                    return <PostEditorItem key={i} tool={item.tool} data={item.data} onChange={(tool, data) => handleChange(tool, data, i)} />
+                    return <PostEditorItem
+                        key={i} index={i} itemtool={item.tool} itemdata={item.data}
+                        onChange={(tool, data) => handleChange(tool, data, i)}
+                        handleRemove={onRemove}
+                        handleInsert={onInsert}
+                    />
                 })}
             </div>
-            <div>
-                <Button onClick={handleAddItem}>Add Item</Button>
+            <div className='mt-10'>
+                <Button onClick={handleAddItem}>Добавить элемент</Button>
             </div>
         </div>
     )

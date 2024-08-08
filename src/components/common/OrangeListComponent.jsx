@@ -1,6 +1,6 @@
 export default function OrangeListComponent({ data = [] }) {
     return (
-        <div>
+        <div className="space-y-3 mt-2 md:mt-4">
             {data.map((item, i) =>
                 <div key={i}>
                     <div className="flex items-center">

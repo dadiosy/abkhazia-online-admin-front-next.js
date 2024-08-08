@@ -1,7 +1,5 @@
 #export
 out
-#API_BASE_URL
-next.config.js
 
 # Logs
 logs
