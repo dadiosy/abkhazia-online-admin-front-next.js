@@ -11,8 +11,9 @@ import YMapProvider from "../components/common/YMapProvider";
 import Editor from 'react-simple-wysiwyg';
 
 import PostEditor from "../../components/common/PostEditor";
-import EditorPreview from "../../components/common/EditorPreview";
+import EditorPreview from "../../components/common/DirectionEditorPreview";
 import ImageEditor from "../../components/common/ImageEditor";
+
 const DirectionDetailPage = () => {
   const [contents, setContents] = useState([])
   const [userInfo, setUserInfo] = useState();
@@ -42,7 +43,6 @@ const DirectionDetailPage = () => {
     if (detailId != 'add' && detailId) {
       axios.get(API_BASE_URL + '/direction/' + detailId, {}).then((res) => {
         const temp = JSON.parse(res.data.data.contents[0].content)
-        console.log(temp)
         setContents(temp)
         setDataDetail(res.data.data);
       }).catch((err) => {
@@ -52,7 +52,6 @@ const DirectionDetailPage = () => {
   }, [])
 
   const handleChange = (_data) => {
-    console.log(_data)
     setContents(_data)
   }
 
@@ -81,27 +80,6 @@ const DirectionDetailPage = () => {
     if (dataDetail.latitude == "") { toast.error('ввод Широта'); return; }
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
     if (detailId != 'add') {
-      let direction1 = {
-        "name": dataDetail.name,
-        "title": dataDetail.title,
-        "description": dataDetail.description,
-        "heading": dataDetail.heading,
-        "bgImg": dataDetail.bgImg,
-        "uniqueLink": dataDetail.uniqueLink,
-        "longitude": dataDetail.longitude,
-        "latitude": dataDetail.latitude
-      };
-      // let update1 = contents.filter((v) => v.id != null);
-      let update1 = contents.filter((v) => v.id == null);
-      let updateData = {
-        'direction': direction1,
-        'contents': {
-        }
-      }
-      // if (new1.length > 0) updateData.contents.new = new1;
-      if (update1.length > 0) updateData.contents.update = update1;
-      // if (removeArray.length > 0) updateData.contents.remove = removeArray;
-
       axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
