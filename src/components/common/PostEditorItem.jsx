@@ -29,10 +29,18 @@ const ToolComponent = ({ tool = 'paragraph', data = undefined, onChange = () => 
 }
 
 export default function PostEditorItem({ index = 0, itemtool = "", itemdata = undefined, onChange = () => { }, handleRemove = () => { }, handleInsert = () => { } }) {
-    const toolOptions = ['paragraph', 'orange_list', 'icon_title', 'hint', 'booking_card', 'hotel_card', 'link_button', 'image', 'subtitle']
+    const toolOptions = [
+        { label: "параграф", value: 'paragraph' },
+        { label: "оранжевый_список", value: 'orange_list' },
+        { label: "значок_название", value: 'icon_title' },
+        { label: "намекать", value: 'hint' },
+        { label: "кнопка_ссылки", value: 'link_button' },
+        { label: "изображение", value: 'image' },
+        { label: "субтитры", value: 'subtitle' },
+    ]
     const handleToolChange = (e) => {
         onChange(e.target.value)
-     }
+    }
     const handleChange = (tool, data) => {
         onChange(tool, data)
     }
@@ -47,7 +55,7 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
             <div className="w-[200px]">
                 <Select placeholder='выберите инструмент' value={itemtool} onChange={handleToolChange} size="sm">
                     {
-                        toolOptions.map((option, i) => <option key={i} value={option}>{option}</option>)
+                        toolOptions.map((option, i) => <option key={i} value={option.value}>{option.label}</option>)
                     }
                 </Select>
             </div>
@@ -55,8 +63,8 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
                 <ToolComponent tool={itemtool} data={itemdata} onChange={handleChange} />
             </div>
             <div className="flex gap-3">
-                <div className="cursor-pointer" onClick={handleClickInsert}>insert</div>
-                <div className="cursor-pointer" onClick={hanldeClickDelete}>delete</div>
+                <div className="cursor-pointer text-green-600" onClick={handleClickInsert}>вставлять</div>
+                <div className="cursor-pointer text-red-600" onClick={hanldeClickDelete}>удалить</div>
             </div>
 
         </div>

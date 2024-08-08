@@ -37,7 +37,7 @@ export default function YMapProvider({ mapX, mapY, onChildData }) {
         >
           <Button
             options={{ maxWidth: 128 }}
-            data={{ content: "Unpress me!" }}
+            data={{ content: "Разожмите меня!" }}
             defaultState={{ selected: true }}
           />
           <Placemark {...placeMark}

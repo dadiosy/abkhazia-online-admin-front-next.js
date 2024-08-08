@@ -26,11 +26,11 @@ export default function OrangeList({ data = [], onChange = () => { } }) {
         <div>
             {data.map((item, i) =>
                 <div className="flex mb-[4px] items-center" key={i}>
-                    <Input placeholder='input list item' className="mr-[4px]" size="sm" value={item} onChange={e => handleInputChange(e.target.value, i)} rows={2} />
+                    <Input placeholder='Входной элемент списка' className="mr-[4px]" size="sm" value={item} onChange={e => handleInputChange(e.target.value, i)} rows={2} />
                     <Button size="xs"><DeleteIcon size="xs" onClick={() => handleDelete(i)} /></Button>
                 </div>)}
             <div>
-                <Button colorScheme='blue' size="xs" onClick={handleAdd}>Add List Item</Button>
+                <Button colorScheme='blue' size="xs" onClick={handleAdd}>Добавить элемент списка</Button>
             </div>
         </div>
     )

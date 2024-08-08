@@ -14,7 +14,7 @@ import PostEditor from "../../components/common/PostEditor";
 import EditorPreview from "../../components/common/EditorPreview";
 import ImageEditor from "../../components/common/ImageEditor";
 const DirectionDetailPage = () => {
-  const [data, setData] = useState([])
+  const [contents, setContents] = useState([])
   const [userInfo, setUserInfo] = useState();
   const router = useRouter();
   const detailId = router.query.id;
@@ -35,44 +35,43 @@ const DirectionDetailPage = () => {
       // { "id": 3, "url": "test" },
     ]
   });
-  const [removeArray, setRemoveArray] = useState([]);
-  const getDataDetail = () => {
-    axios.get(API_BASE_URL + '/direction/' + detailId,
-      {
-        // 'id': detailId
-      }).then((res) => {
+
+  useEffect(() => {
+    var saveData = JSON.parse(localStorage?.saveData || null) || {};
+    setUserInfo(saveData.userInfo);
+    if (detailId != 'add' && detailId) {
+      axios.get(API_BASE_URL + '/direction/' + detailId, {}).then((res) => {
+        const temp = JSON.parse(res.data.data.contents[0].content)
+        console.log(temp)
+        setContents(temp)
         setDataDetail(res.data.data);
       }).catch((err) => {
         console.log(err);
       });
-  }
-  useEffect(() => {
-    var saveData = JSON.parse(localStorage?.saveData || null) || {};
-    setUserInfo(saveData.userInfo);
-    getDataDetail();
-  }, [detailId])
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (detailId > 0 && dataDetail.name == "") {
-        getDataDetail();
-        // window.location.reload();
-      }
-    }, 1000);
-    return () => clearTimeout(timeout);
-  }, [dataDetail])
+    }
+  }, [])
 
   const handleChange = (_data) => {
     console.log(_data)
-    setData(_data)
+    setContents(_data)
   }
 
   const handleTextChange = (e) => {
-    console.log(e.target.name, e.target.value)
     setDataDetail({ ...dataDetail, [e.target.name]: e.target.value });
   }
+  const getXY = (XY) => {
+    setDataDetail({ ...dataDetail, ['latitude']: XY[0], ['longitude']: XY[1] });
+  }
 
+  const handleDescriptionChange = (e) => {
+    setDataDetail({ ...dataDetail, description: e.target.value })
+  }
+  const handleChangeImage = (data) => {
+    const { thumbURL } = data
+    setDataDetail({ ...dataDetail, bgImg: thumbURL })
+  }
 
-  const handleCreate = () => {
+  const handleSave = () => {
     if (dataDetail.name == "") { toast.error('входное Название'); return; }
     if (dataDetail.title == "") { toast.error('введите Заголовок'); return; }
     if (dataDetail.description == "") { toast.error('входное Описание'); return; }
@@ -92,19 +91,20 @@ const DirectionDetailPage = () => {
         "longitude": dataDetail.longitude,
         "latitude": dataDetail.latitude
       };
-      let update1 = dataDetail.contents.filter((v) => v.id != null);
-      let new1 = dataDetail.contents.filter((v) => v.id == null);
+      // let update1 = contents.filter((v) => v.id != null);
+      let update1 = contents.filter((v) => v.id == null);
       let updateData = {
         'direction': direction1,
         'contents': {
         }
       }
-      if (new1.length > 0) updateData.contents.new = new1;
+      // if (new1.length > 0) updateData.contents.new = new1;
       if (update1.length > 0) updateData.contents.update = update1;
-      if (removeArray.length > 0) updateData.contents.remove = removeArray;
+      // if (removeArray.length > 0) updateData.contents.remove = removeArray;
 
       axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
-        { ...updateData }
+        { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
+        { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
         if (res.data.statusCode == 200) {
           Router.push('/direction');
@@ -118,7 +118,7 @@ const DirectionDetailPage = () => {
       })
     } else {
       axios.post(API_BASE_URL + "/direction",
-        { ...dataDetail },
+        { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
         if (res.data.statusCode == 400) toast.error(res.data.message);
@@ -127,23 +127,13 @@ const DirectionDetailPage = () => {
           Router.push('/direction');
         }
       }).catch((err) => {
+        console.log(err)
         if (err.response?.status == 401) {
           toast.error("пожалуйста, войдите в систему");
           Router.push('/auth/login');
         }
       })
     }
-  }
-  const getXY = (XY) => {
-    setDataDetail({ ...dataDetail, ['latitude']: XY[0], ['longitude']: XY[1] });
-  }
-
-  const handleDescriptionChange = (e) => {
-    setDataDetail({ ...dataDetail, description: e.target.value })
-  }
-  const handleChangeImage = (data) => {
-    const { thumbURL } = data
-    setDataDetail({ ...dataDetail, bgImg: thumbURL })
   }
 
   return (
@@ -176,11 +166,11 @@ const DirectionDetailPage = () => {
                 <div className="flex flex-row">
                   <div className="my-2 mx-5 w-32 font-bold leading-3">Фоновое изображение:</div>
                   <div className="w-full">
-                    <ImageEditor onChange={handleChangeImage} />
+                    <ImageEditor data={{ thumbURL: dataDetail.bgImg }} onChange={handleChangeImage} />
                   </div>
                 </div>
                 <div className="flex flex-row">
-                  <div className="my-2 mx-5 w-32 font-bold">Unique URL Segment:</div>
+                  <div className="my-2 mx-5 w-32 font-bold">Уникальный сегмент URL:</div>
                   <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
                 </div>
                 <div className="flex flex-row justify-between">
@@ -199,16 +189,16 @@ const DirectionDetailPage = () => {
               </div>
             </div>
             <div className="flex">
-              <PostEditor onChange={handleChange} />
+              <PostEditor data={contents} onChange={handleChange} />
             </div>
           </div>
           <div className="flex justify-center gap-x-10 my-10">
             <button className={BtnActive} onClick={() => { Router.push('/direction') }}>Назад</button>
-            <button className={BtnActive} onClick={handleCreate}>
+            <button className={BtnActive} onClick={handleSave}>
               {detailId ? 'Сохранить' : 'Создавать'}
             </button>
           </div>
-          <EditorPreview data={data} dataDetail={dataDetail} />
+          <EditorPreview data={contents} dataDetail={dataDetail} />
         </div >
       ) : null}
       <Footer />
