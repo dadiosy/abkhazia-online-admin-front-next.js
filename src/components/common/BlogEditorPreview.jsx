@@ -3,6 +3,7 @@ import OtherLinks from "./OtherLinks"
 import PreviewComponents from "./PreviewComponents"
 import SubtitleList from "./SubtitleList"
 export default function EditorPreview({ data = [], dataDetail = {} }) {
+    const subtitleList = data.filter((item, i) => item.tool == 'subtitle' && item.data.size == "level1")
     return (
         <div>
             <div className="relative">
@@ -11,7 +12,7 @@ export default function EditorPreview({ data = [], dataDetail = {} }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="p-4 md:hidden">
-                    <SubtitleList />
+                    <SubtitleList params={subtitleList} />
                 </div>
                 <div className="p-4 md:py-10 md:pl-32 md:pr-0">
                     <div className="space-y-4">
@@ -21,12 +22,13 @@ export default function EditorPreview({ data = [], dataDetail = {} }) {
                         return <PreviewComponents data={item} key={i} />
                     })}
                 </div>
-                <div className="text-center hidden md:block md:text-left md:py-10 md:pr-32 md:pl-16">
-                    <OtherLinks />
-                    <SubtitleList className="mt-14" />
+                <div className="relative">
+                    <div className=" sticky top-20 hidden md:block md:text-left md:py-10 md:pr-32 md:pl-16">
+                        <OtherLinks />
+                        <SubtitleList className="mt-14" params={subtitleList} />
+                    </div>
                 </div>
             </div>
-
         </div>
     )
 }

@@ -6,7 +6,11 @@ export default function SubTitleRenderComponent({ data = { title: "", size: "lev
     }
     return (
         <div>
-            <h3 className={size === 'level1' ? textStyle.level1 : textStyle.level2}>{title}</h3>
+            <h3
+                className={size === 'level1' ? textStyle.level1 : textStyle.level2}
+                id={size == 'level1' ? "subtitle-" + title : ""}
+            >
+                {title}</h3>
         </div>
     )
 }
