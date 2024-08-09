@@ -49,7 +49,7 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
         handleRemove(index)
     }
     return (
-        <div className="flex md:flex-row flex-col gap-x-2">
+        <div className="flex md:flex-row flex-col gap-x-4">
             <div className="w-[150px]">
                 <Select value={itemtool} onChange={handleToolChange} size="sm">
                     {
@@ -60,9 +60,9 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
             <div className="w-[400px]">
                 <ToolComponent tool={itemtool} data={itemdata} onChange={handleChange} />
             </div>
-            <div className="flex gap-3">
-                <div className="cursor-pointer px-3 py-1 h-fit border border-green-600 rounded-md text-green-600 hover:bg-green-600 hover:text-white" onClick={handleClickInsert}>вставлять</div>
-                <div className="cursor-pointer px-3 py-1 h-fit border border-red-600 rounded-md text-red-600 hover:bg-red-600 hover:text-white" onClick={hanldeClickDelete}>удалить</div>
+            <div className="flex gap-2">
+                <img className="cursor-pointer w-7 h-7" src="/icon/insert.png" onClick={handleClickInsert}/>
+                <img src="/icon/trash.svg" className="cursor-pointer w-7 h-7" onClick={hanldeClickDelete}/>
             </div>
 
         </div>
