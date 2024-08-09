@@ -51,7 +51,7 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
     return (
         <div className="flex md:flex-row flex-col gap-x-2">
             <div className="w-[150px]">
-                <Select placeholder='выберите инструмент' value={itemtool} onChange={handleToolChange} size="sm">
+                <Select value={itemtool} onChange={handleToolChange} size="sm">
                     {
                         toolOptions.map((option, i) => <option key={i} value={option.value}>{option.label}</option>)
                     }
