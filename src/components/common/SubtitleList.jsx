@@ -1,31 +1,27 @@
-const data = [
-	"Где находится Цандрыпш",
-	"Как добраться до поселка Цандрыпш",
-	"Как добраться по маршруту аэропорт Адлер — Цандрипш",
-	"Как добраться до Цандрыпша от крупных городов Абхазии",
-	"История Цандрыпша",
-	"Достопримечательности поселка Цандрыпш, что посмотреть",
-	"Пляжи Цандрыпша",
-]
+import Link from "next/link";
+import Scrollspy from "react-scrollspy";
 
-export default function SubtitleList(params) {
+export default function SubtitleList({ params = [] }) {
+	const items = params.map((c, i) => `subtitle-${c.data.title}`)
 	return (
-		<div className={params.className}>
-			<div className="text-[24px] font-semibold">Оглавление</div>
-			<div className="space-y-3 mt-3 md:mt-4">
-				{
-					data.map((item, i) =>
-						<div key={i}>
-							<div className="flex items-center">
-								{i == 0 ?
-									<img src="/img/detail-svg/dot-red.svg" className="mr-5" /> :
-									<img src="/img/detail-svg/dot-yon.svg" className="mr-5" />
-								}
-								<span className="text-p1 truncate">{item}</span>
-							</div>
-						</div>)
-				}
-			</div>
-		</div>
+		<>
+			{params &&
+				<div className="flex flex-col gap-3 md:gap-6">
+					<h4 className="text-[20px] md:text-[30px]">
+						Оглавление
+					</h4>
+					<Scrollspy items={items} currentClassName="is-current">
+						{params.map((c, i) => (
+							<li key={i} className="flex items-center gap-3 py-2 !text-base md:!text-md">
+								<div className="flex-none w-3 h-3 md:w-4 md:h-4 bg-red-300 rounded-full"></div>
+								<Link href={`#subtitle-${c.data.title}`}>{c.data.title}
+								</Link>
+							</li>
+						))}
+					</Scrollspy>
+				</div>
+			}
+		</>
+
 	)
 }

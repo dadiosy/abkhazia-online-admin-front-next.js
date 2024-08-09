@@ -70,9 +70,7 @@ const DirectionIndex = () => {
   const handleCheck = (id, newActive) => {
     axios.put(API_BASE_URL + '/direction/' + id,
       {
-        "direction": {
-          'active': newActive
-        }
+        active: newActive
       }).then((res) => {
         getDataList();
       }).catch((err) => {

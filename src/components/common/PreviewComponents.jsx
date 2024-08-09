@@ -2,6 +2,7 @@ import HintRenderComponent from "./HintRenderComponent"
 import IconTitleRenderComponent from "./IconTitleRenderComponent"
 import ImageRenderComponent from "./ImageRenderComponent"
 import LinkButtonRender from "./LinkButtonRender"
+import LocationEditorRender from "./LocationEditorRender"
 import OrangeListComponent from "./OrangeListComponent"
 import SubTitleRenderComponent from "./SubTitleRenderComponent"
 
@@ -23,6 +24,8 @@ export default function PreviewComponents({ data }) {
             return <LinkButtonRender data={data.data} />
         case 'image':
             return <ImageRenderComponent data={data.data} />
+        case 'location':
+            return <LocationEditorRender data={data.data} />
         default:
             return null
     }

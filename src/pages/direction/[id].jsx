@@ -7,7 +7,6 @@ import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import { API_BASE_URL, BtnActive, normalInputCss } from '../../const/CustomConsts';
 import { toast } from 'react-toastify';
-import YMapProvider from "../components/common/YMapProvider";
 import Editor from 'react-simple-wysiwyg';
 
 import PostEditor from "../../components/common/PostEditor";
@@ -26,15 +25,10 @@ const DirectionDetailPage = () => {
     'heading': '',
     'bgImg': '',
     'uniqueLink': '',
-    'latitude': '',
-    'longitude': '',
     'contents': [{
       'question': '',
-      'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
-    }],
-    'images': [
-      // { "id": 3, "url": "test" },
-    ]
+      'content': ''
+    }]
   });
 
   useEffect(() => {
@@ -58,9 +52,6 @@ const DirectionDetailPage = () => {
   const handleTextChange = (e) => {
     setDataDetail({ ...dataDetail, [e.target.name]: e.target.value });
   }
-  const getXY = (XY) => {
-    setDataDetail({ ...dataDetail, ['latitude']: XY[0], ['longitude']: XY[1] });
-  }
 
   const handleDescriptionChange = (e) => {
     setDataDetail({ ...dataDetail, description: e.target.value })
@@ -76,9 +67,8 @@ const DirectionDetailPage = () => {
     if (dataDetail.description == "") { toast.error('входное Описание'); return; }
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
     if (dataDetail.uniqueLink == "") { toast.error('URL segment need'); return; }
-
-    if (dataDetail.latitude == "") { toast.error('ввод Широта'); return; }
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
+
     if (detailId != 'add') {
       axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
@@ -122,7 +112,7 @@ const DirectionDetailPage = () => {
       {dataDetail ? (
         <div className="flex flex-col container mx-auto max-w-[1440px] mt-[60px] md:mt-[94px]">
           {/* <div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-5 px-4 md:px-[8.333333333%] ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="flex flex-col">
               <div className="flex flex-col gap-3">
                 <div className="flex flex-row">
@@ -150,19 +140,6 @@ const DirectionDetailPage = () => {
                 <div className="flex flex-row">
                   <div className="my-2 mx-5 w-32 font-bold">Уникальный сегмент URL:</div>
                   <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
-                </div>
-                <div className="flex flex-row justify-between">
-                  <div className="flex flex-row">
-                    <div className="my-2 mx-5 w-32 font-bold">Широта:</div>
-                    <input name="latitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.latitude} />
-                  </div>
-                  <div className="flex flex-row  w-1/2">
-                    <div className="my-2 mx-5 w-32 font-bold">Долгота:</div>
-                    <input name="longitude" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.longitude} />
-                  </div>
-                </div>
-                <div>
-                  <YMapProvider className="rounded-xl" mapX={dataDetail?.latitude} mapY={dataDetail?.longitude} onChildData={getXY} />
                 </div>
               </div>
             </div>

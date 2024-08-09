@@ -2,7 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  scroll-behavior: smooth;
+}
 
+* {
+  scroll-margin-top: 100px;
+  /* Adjust the value as needed */
+}
+
+/* For older versions of Safari (11 or older) */
+@supports not (scroll-margin-top: 0) {
+  * {
+    scroll-snap-margin-top: 100px;
+    /* Compatibility fallback */
+  }
+}
 .ymaps-2-1-79-map ymaps,
 .ymaps-2-1-79-map ymaps:after,
 .ymaps-2-1-79-map ymaps:before {

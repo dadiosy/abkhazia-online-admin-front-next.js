@@ -73,9 +73,7 @@ const index = () => {
   const handleCheck = (id, newActive) => {
     axios.put(API_BASE_URL + '/blog/' + id,
       {
-        "blog": {
-          'active': newActive
-        }
+        active: newActive
       }).then((res) => {
         getDataList();
       }).catch((err) => {

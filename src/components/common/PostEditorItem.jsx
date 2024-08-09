@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Select } from "@chakra-ui/react";
 import SimpleEditor from "./SimpleEditor";
 import OrangeList from "./OrangeList";
@@ -6,37 +5,36 @@ import IconTitleEditor from "./IconTitleEditor";
 import SubTitleEditor from "./SubTitleEditor";
 import LinkButtonEditor from "./LinkButtonEditor";
 import ImageEditor from "./ImageEditor";
+import LocationEditor from "./LocationEditor";
 
 const ToolComponent = ({ tool = 'paragraph', data = undefined, onChange = () => { } }) => {
     const handleChange = (tool, data) => {
         onChange(tool, data)
     }
-    if (tool === 'paragraph') {
-        return <SimpleEditor data={data} onChange={data => handleChange('paragraph', data)} />
-    } else if (tool === 'orange_list') {
-        return <OrangeList data={data} onChange={data => handleChange('orange_list', data)} />
-    } else if (tool === 'hint') {
-        return <SimpleEditor data={data} onChange={data => handleChange('hint', data)} />
-    } else if (tool === 'icon_title') {
-        return <IconTitleEditor data={data} onChange={data => handleChange('icon_title', data)} />
-    } else if (tool === 'subtitle') {
-        return <SubTitleEditor data={data} onChange={data => handleChange('subtitle', data)} />
-    } else if (tool === 'link_button') {
-        return <LinkButtonEditor data={data} onChange={data => handleChange('link_button', data)} />
-    } else if (tool === 'image') {
-        return <ImageEditor data={data} onChange={data => handleChange('image', data)} />
+    switch (tool) {
+        case 'paragraph': return <SimpleEditor data={data} onChange={data => handleChange('paragraph', data)} />;
+        case 'orange_list': return <OrangeList data={data} onChange={data => handleChange('orange_list', data)} />
+        case 'hint': return <SimpleEditor data={data} onChange={data => handleChange('hint', data)} />
+        case 'icon_title': return <IconTitleEditor data={data} onChange={data => handleChange('icon_title', data)} />
+        case 'subtitle': return <SubTitleEditor data={data} onChange={data => handleChange('subtitle', data)} />
+        case 'link_button': return <LinkButtonEditor data={data} onChange={data => handleChange('link_button', data)} />
+        case 'image': return <ImageEditor data={data} onChange={data => handleChange('image', data)} />
+        case 'location': return <LocationEditor data={data} onChange={data => handleChange('location', data)} />
+        default:
+            break;
     }
 }
 
 export default function PostEditorItem({ index = 0, itemtool = "", itemdata = undefined, onChange = () => { }, handleRemove = () => { }, handleInsert = () => { } }) {
     const toolOptions = [
-        { label: "параграф", value: 'paragraph' },
-        { label: "оранжевый_список", value: 'orange_list' },
-        { label: "значок_название", value: 'icon_title' },
-        { label: "намекать", value: 'hint' },
-        { label: "кнопка_ссылки", value: 'link_button' },
+        { label: "Абзац", value: 'paragraph' },
+        { label: "Маркированный список", value: 'orange_list' },
+        { label: "Стикеры", value: 'icon_title' },
+        { label: "Подсказка", value: 'hint' },
+        { label: "Кнопка", value: 'link_button' },
         { label: "изображение", value: 'image' },
-        { label: "субтитры", value: 'subtitle' },
+        { label: "Изображение", value: 'subtitle' },
+        { label: "Подзаголовок", value: 'location' },
     ]
     const handleToolChange = (e) => {
         onChange(e.target.value)
@@ -52,8 +50,8 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
     }
     return (
         <div className="flex md:flex-row flex-col gap-x-2">
-            <div className="w-[200px]">
-                <Select placeholder='выберите инструмент' value={itemtool} onChange={handleToolChange} size="sm">
+            <div className="w-[150px]">
+                <Select value={itemtool} onChange={handleToolChange} size="sm">
                     {
                         toolOptions.map((option, i) => <option key={i} value={option.value}>{option.label}</option>)
                     }
@@ -63,8 +61,8 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
                 <ToolComponent tool={itemtool} data={itemdata} onChange={handleChange} />
             </div>
             <div className="flex gap-3">
-                <div className="cursor-pointer text-green-600" onClick={handleClickInsert}>вставлять</div>
-                <div className="cursor-pointer text-red-600" onClick={hanldeClickDelete}>удалить</div>
+                <div className="cursor-pointer px-3 py-1 h-fit border border-green-600 rounded-md text-green-600 hover:bg-green-600 hover:text-white" onClick={handleClickInsert}>вставлять</div>
+                <div className="cursor-pointer px-3 py-1 h-fit border border-red-600 rounded-md text-red-600 hover:bg-red-600 hover:text-white" onClick={hanldeClickDelete}>удалить</div>
             </div>
 
         </div>
