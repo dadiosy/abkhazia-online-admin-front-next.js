@@ -3,7 +3,7 @@ import OtherLinks from "./OtherLinks"
 import PreviewComponents from "./PreviewComponents"
 import SubtitleList from "./SubtitleList"
 export default function EditorPreview({ data = [], dataDetail = {} }) {
-    const subtitleList = data.filter((item, i) => item.tool == 'subtitle' && item.data.size == "level1")
+    const subtitleList = data.filter((item, i) => item?.tool == 'subtitle' && item?.data?.size == "level1")
     return (
         <div>
             <div className="relative">
