@@ -27,14 +27,14 @@ const ToolComponent = ({ tool = 'paragraph', data = undefined, onChange = () => 
 
 export default function PostEditorItem({ index = 0, itemtool = "", itemdata = undefined, onChange = () => { }, handleRemove = () => { }, handleInsert = () => { } }) {
     const toolOptions = [
-        { label: "параграф", value: 'paragraph' },
-        { label: "оранжевый_список", value: 'orange_list' },
-        { label: "значок_название", value: 'icon_title' },
-        { label: "намекать", value: 'hint' },
-        { label: "кнопка_ссылки", value: 'link_button' },
+        { label: "Абзац", value: 'paragraph' },
+        { label: "Маркированный список", value: 'orange_list' },
+        { label: "Стикеры", value: 'icon_title' },
+        { label: "Подсказка", value: 'hint' },
+        { label: "Кнопка", value: 'link_button' },
         { label: "изображение", value: 'image' },
-        { label: "субтитры", value: 'subtitle' },
-        { label: "location", value: 'location' },
+        { label: "Изображение", value: 'subtitle' },
+        { label: "Подзаголовок", value: 'location' },
     ]
     const handleToolChange = (e) => {
         onChange(e.target.value)
