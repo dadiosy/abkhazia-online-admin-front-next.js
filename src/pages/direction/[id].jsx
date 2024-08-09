@@ -7,7 +7,6 @@ import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import { API_BASE_URL, BtnActive, normalInputCss } from '../../const/CustomConsts';
 import { toast } from 'react-toastify';
-import YMapProvider from "../components/common/YMapProvider";
 import Editor from 'react-simple-wysiwyg';
 
 import PostEditor from "../../components/common/PostEditor";
@@ -113,7 +112,7 @@ const DirectionDetailPage = () => {
       {dataDetail ? (
         <div className="flex flex-col container mx-auto max-w-[1440px] mt-[60px] md:mt-[94px]">
           {/* <div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-5 px-4 md:px-[8.333333333%] ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="flex flex-col">
               <div className="flex flex-col gap-3">
                 <div className="flex flex-row">

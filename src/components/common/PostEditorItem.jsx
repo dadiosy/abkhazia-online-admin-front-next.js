@@ -50,7 +50,7 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
     }
     return (
         <div className="flex md:flex-row flex-col gap-x-2">
-            <div className="w-[200px]">
+            <div className="w-[150px]">
                 <Select placeholder='выберите инструмент' value={itemtool} onChange={handleToolChange} size="sm">
                     {
                         toolOptions.map((option, i) => <option key={i} value={option.value}>{option.label}</option>)
@@ -61,8 +61,8 @@ export default function PostEditorItem({ index = 0, itemtool = "", itemdata = un
                 <ToolComponent tool={itemtool} data={itemdata} onChange={handleChange} />
             </div>
             <div className="flex gap-3">
-                <div className="cursor-pointer text-green-600" onClick={handleClickInsert}>вставлять</div>
-                <div className="cursor-pointer text-red-600" onClick={hanldeClickDelete}>удалить</div>
+                <div className="cursor-pointer px-3 py-1 h-fit border border-green-600 rounded-md text-green-600 hover:bg-green-600 hover:text-white" onClick={handleClickInsert}>вставлять</div>
+                <div className="cursor-pointer px-3 py-1 h-fit border border-red-600 rounded-md text-red-600 hover:bg-red-600 hover:text-white" onClick={hanldeClickDelete}>удалить</div>
             </div>
 
         </div>
