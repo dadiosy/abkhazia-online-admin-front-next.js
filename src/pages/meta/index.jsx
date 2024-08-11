@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, normalInputCss, BgColor, BtnActive, sitePages } from '../../const/CustomConsts';
+import { BgColor } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import Router from "next/router";
@@ -18,7 +18,7 @@ const MetaPage = () => {
 
   const getSeoMetaData = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/seometa",
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/seometa",
       {}
     ).then((res) => {
       setMetaData(res.data.data);
@@ -43,7 +43,7 @@ const MetaPage = () => {
   const handleButton = (ind, id, type) => {
     if (type == 'delete') {
       setLoading(true);
-      axios.delete(API_BASE_URL + "/seometa/" + metaData[ind].id,
+      axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/seometa/" + metaData[ind].id,
       ).then((res) => {
         setMetaData(metaData.filter((item, index) => index !== ind));
         setLoading(false);
@@ -65,7 +65,7 @@ const MetaPage = () => {
         page: metaData[ind].page
       }
 
-      axios.put(API_BASE_URL + "/seometa/" + id,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/seometa/" + id,
         metaData[ind]
       ).then((res) => {
         setLoading(false);
@@ -81,7 +81,7 @@ const MetaPage = () => {
   }
 
   const handleAddNew = () => {
-    axios.post(API_BASE_URL + "/seometa",
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/seometa",
       tempData
     ).then((res) => {
       setMetaData(metaData.concat(res.data.data));

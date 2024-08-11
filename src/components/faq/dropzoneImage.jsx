@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import DropBox from '../common/DropBox';
 import axios from "axios";
-import { API_BASE_URL } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 
 const DropZoneImage = ({ onChildData }) => {
@@ -12,12 +11,12 @@ const DropZoneImage = ({ onChildData }) => {
         formData.append('image', imgFile);
         setUploading(true);
         try {
-            const res = await axios.post(`${API_BASE_URL}/img/avatar`, formData, {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            onChildData(`${API_BASE_URL}/img/avatar/${res.data.data}`);
+            onChildData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar/${res.data.data}`);
         } catch (error) {
             console.log(error);
             console.error('Error uploading file:', error);

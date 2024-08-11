@@ -6,7 +6,7 @@ import axios from "axios";
 import { TailSpin } from "react-loader-spinner";
 import { Image } from '@chakra-ui/react'
 import { StreamAction } from "../store/actions/streamSlice";
-import { API_BASE_URL, APSNY_CAMERA_LIST_URL, APSNY_GET_TOKEN_URL, APSNY_LIVE_STREAM_URL, cityList } from "../const/CustomConsts";
+import { APSNY_CAMERA_LIST_URL, APSNY_GET_TOKEN_URL, APSNY_LIVE_STREAM_URL, cityList } from "../const/CustomConsts";
 
 const VideoTag = () => {
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const VideoTag = () => {
 
   const getActiveCity = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/camera/active',
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/camera/active',
       {}
     ).then((res) => {
       setCityActiveList(res.data.data);

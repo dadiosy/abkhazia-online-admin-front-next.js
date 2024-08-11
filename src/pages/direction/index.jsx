@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
+import { BtnActive } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { toast } from 'react-toastify';
 import { CloseButton } from '@chakra-ui/react'
@@ -19,7 +19,7 @@ const DirectionIndex = () => {
   const [userInfo, setUserInfo] = useState();
   const getDataList = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/direction", {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/direction", {
       'limit': 0,
       'offset': 0
     }).then((res) => {
@@ -42,7 +42,7 @@ const DirectionIndex = () => {
   }, []);
 
   const directionDel = (id) => {
-    axios.delete(API_BASE_URL + "/direction/" + id,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/direction/" + id,
       // { id },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
@@ -68,7 +68,7 @@ const DirectionIndex = () => {
     directionDel(selId);
   }
   const handleCheck = (id, newActive) => {
-    axios.put(API_BASE_URL + '/direction/' + id,
+    axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/direction/' + id,
       {
         active: newActive
       }).then((res) => {
@@ -92,8 +92,8 @@ const DirectionIndex = () => {
             {dataList?.map((v, i) => (
               <div key={i} onClick={() => handleImgClick(v.id, v.uniqueLink)} className='cursor-pointer flex w-full h-full justify-center rounded-[20px] relative col-span-3 md:col-span-1'>
                 <div className="rounded-[10px]">
-                  {/* <img src={`${API_BASE_URL}/direction/${v.bgImg}`} width={600} height={400} className="rounded-[10px]" /> */}
-                  <img src={v.bgImg} width={600} height={400} className="rounded-[10px]" />
+                  {/* <Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/direction/${v.bgImg}`} width={600} height={400} className="rounded-[10px]" /> */}
+                  <Image src={v.bgImg} width={600} height={400} className="rounded-[10px]" />
                   <div className="absolute bottom-5 left-5 text-white text-2xl font-semibold  text-shadow-lg  flex-wrap w-[90%]">
                     {v.name}
                   </div>

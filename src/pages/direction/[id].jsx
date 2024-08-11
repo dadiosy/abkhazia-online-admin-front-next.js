@@ -5,7 +5,7 @@ import Router, { useRouter } from "next/router";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive, normalInputCss } from '../../const/CustomConsts';
+import { BtnActive, normalInputCss } from '../../const/CustomConsts';
 import { toast } from 'react-toastify';
 import Editor from 'react-simple-wysiwyg';
 
@@ -35,7 +35,7 @@ const DirectionDetailPage = () => {
     var saveData = JSON.parse(localStorage?.saveData || null) || {};
     setUserInfo(saveData.userInfo);
     if (detailId != 'add' && detailId) {
-      axios.get(API_BASE_URL + '/direction/' + detailId, {}).then((res) => {
+      axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/direction/' + detailId, {}).then((res) => {
         const temp = JSON.parse(res.data.data.contents[0].content)
         setContents(temp)
         setDataDetail(res.data.data);
@@ -70,7 +70,7 @@ const DirectionDetailPage = () => {
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
 
     if (detailId != 'add') {
-      axios.put(API_BASE_URL + "/direction/" + dataDetail.id,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/direction/" + dataDetail.id,
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
@@ -85,7 +85,7 @@ const DirectionDetailPage = () => {
         }
       })
     } else {
-      axios.post(API_BASE_URL + "/direction",
+      axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/direction",
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {

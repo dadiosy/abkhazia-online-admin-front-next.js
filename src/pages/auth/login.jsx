@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Router from "next/router";
 import axios from "axios";
-import { API_BASE_URL } from '../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import NavBar from "../components/layout/NavBar";
 
@@ -27,7 +26,7 @@ const LoginPage = () => {
   }
 
   const axiosFunc = () => {
-    axios.post(API_BASE_URL + '/auth/signin', {
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/signin', {
       email: userInfo.email,
       password: userInfo.password
     }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { API_BASE_URL } from '../../const/CustomConsts';
 
 export default function ImageEditor({ data = { thumbURL: "" }, onChange = () => { } }) {
     const inputId = uuidv4()
@@ -15,7 +14,7 @@ export default function ImageEditor({ data = { thumbURL: "" }, onChange = () => 
         const file = event.target.files[0]
         const formData = new FormData()
         formData.append('image', file)
-        axios.post(API_BASE_URL + "/img/direction", formData,
+        axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/img/direction", formData,
             {
                 headers: {
                     'Authorization': `Bearer ${userInfo.token}`,
@@ -24,7 +23,7 @@ export default function ImageEditor({ data = { thumbURL: "" }, onChange = () => 
             }
         )
             .then(res => {
-                onChange({ thumbURL: `${API_BASE_URL}/img/direction/${res.data.data}` })
+                onChange({ thumbURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/img/direction/${res.data.data}` })
             })
             .catch(error => { console.log(error) })
 
@@ -36,7 +35,7 @@ export default function ImageEditor({ data = { thumbURL: "" }, onChange = () => 
     }, []);
 
     const handleDelete = () => {
-        axios.post(API_BASE_URL + "/img/remove", { url: data.thumbURL },
+        axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/img/remove", { url: data.thumbURL },
             { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
         )
             .then(res => {

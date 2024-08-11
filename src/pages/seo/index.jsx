@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, normalInputCss, BgColor } from '../../const/CustomConsts';
+import { BgColor } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import DropzoneImage from '../components/seo/dropzoneImage';
@@ -26,7 +26,7 @@ const SeoIndex = () => {
   const updateCityActive = (cityId) => {
     setLoading(true);
 
-    axios.put(API_BASE_URL + '/camera/' + cityId,
+    axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/camera/' + cityId,
       { "active": !cityActiveList.some(item => item.id === cityId) }
     ).then((res) => {
       toast.success('Обновить успех');
@@ -43,7 +43,7 @@ const SeoIndex = () => {
   };
   const getActiveCity = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/camera/active', {}
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/camera/active', {}
     ).then((res) => {
       setCityActiveList(res.data.data);
       setLoading(false);
@@ -54,7 +54,7 @@ const SeoIndex = () => {
 
   const getInit = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/camera/init', {}
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/camera/init', {}
     ).then((res) => {
       setLoading(false);
     }).catch((err) => {
@@ -64,7 +64,7 @@ const SeoIndex = () => {
 
   const getAllCity = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/camera', {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/camera', {
       params: {
         // limit: 5,
         // offset: pageNum
@@ -88,7 +88,7 @@ const SeoIndex = () => {
 
   const getBlockData = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/meta', {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/meta', {
       params: {
         // limit: 5,
         // offset: pageNum
@@ -104,7 +104,7 @@ const SeoIndex = () => {
   const handleEditBlockData = () => {
     if (blockData.text == "" || blockData.title == "" || blockData.img == "") { toast.error('Напишите текст ответа!'); }
     else {
-      axios.post(API_BASE_URL + '/meta',
+      axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + '/meta',
         { ...blockData },
         {
           headers: {
@@ -142,7 +142,7 @@ const SeoIndex = () => {
 
   const getSeoData = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/blog/seo", {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/seo", {
       'limit': limit,
       'offset': pageNum * limit
     }).then((res) => {
@@ -157,7 +157,7 @@ const SeoIndex = () => {
 
   const createSeo = () => {
     setLoading(true);
-    axios.post(API_BASE_URL + "/blog/admin/seo",
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/admin/seo",
       { 'keyword': inputValue },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } },
     ).then((res) => {
@@ -174,7 +174,7 @@ const SeoIndex = () => {
 
   const handleEdit = (id, idText) => {
     setLoading(true);
-    axios.put(API_BASE_URL + "/blog/admin/seo/" + id,
+    axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/admin/seo/" + id,
       {
         'keyword': idText
       }
@@ -193,7 +193,7 @@ const SeoIndex = () => {
 
   const handleDel = (id) => {
     setLoading(true);
-    axios.delete(API_BASE_URL + "/blog/admin/seo/" + id,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/admin/seo/" + id,
       {},
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } },
     ).then((res) => {
