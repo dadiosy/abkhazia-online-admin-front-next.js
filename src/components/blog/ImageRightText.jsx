@@ -4,7 +4,6 @@ import moment from "moment";
 import Image from "next/image";
 import { imageLoader } from "../../helper";
 import Router from "next/router";
-import { API_BASE_URL } from "../../const/CustomConsts"
 
 export default function ImageRightText({ id, imgTitle, imgSrc, imgDesc, imgDate, imgType }) {
 

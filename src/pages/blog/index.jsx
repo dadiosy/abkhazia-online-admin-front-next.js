@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
+import { BtnActive } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { toast } from 'react-toastify';
 import { CloseButton } from '@chakra-ui/react'
@@ -20,7 +20,7 @@ const index = () => {
 
   const getDataList = () => {
     setLoading(true);
-    axios.post(API_BASE_URL + "/blog", {
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog", {
       'limit': 0,
       'offset': 0
     }).then((res) => {
@@ -44,7 +44,7 @@ const index = () => {
   }, []);
 
   const blogDel = (id) => {
-    axios.delete(API_BASE_URL + "/blog/" + id,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/" + id,
       // { 'id': id },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
@@ -71,7 +71,7 @@ const index = () => {
   }
 
   const handleCheck = (id, newActive) => {
-    axios.put(API_BASE_URL + '/blog/' + id,
+    axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/blog/' + id,
       {
         active: newActive
       }).then((res) => {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
+import { BtnActive } from '../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
 import { Select } from '@chakra-ui/react'
@@ -33,7 +33,7 @@ const FaqDetail = () => {
 
   const getUsers = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/user', {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/user', {
       params: {
         // limit: 5,
         // offset: pageNum
@@ -49,7 +49,7 @@ const FaqDetail = () => {
   const getDataList = () => {
     if (detailId > 0) {
       setLoading(true);
-      axios.get(API_BASE_URL + "/faq/admin/question/" + detailId, {
+      axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/question/" + detailId, {
         id: detailId,
       }).then((res) => {
         setDataList(res.data.data);
@@ -62,7 +62,7 @@ const FaqDetail = () => {
 
   const deleteAnswer = () => {
     setLoading(true);
-    axios.delete(API_BASE_URL + "/faq/admin/answer/" + selId,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/answer/" + selId,
       // { id: selId },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
@@ -102,7 +102,7 @@ const FaqDetail = () => {
       setIsOpen(true);
     }
     if (approve == 1 || approve == 2) {//approve then dis
-      axios.put(API_BASE_URL + "/faq/admin/answer/" + id,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/answer/" + id,
         { approve: approve },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
@@ -122,7 +122,7 @@ const FaqDetail = () => {
     if (!userName) { toast.error('Вставить называть'); return; }
     if (!userAvatar) { toast.error('Вставить аватар'); return; }
 
-    axios.post(API_BASE_URL + '/faq/answer',
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/answer',
       {
         questionID: detailId,
         answerText: textData,

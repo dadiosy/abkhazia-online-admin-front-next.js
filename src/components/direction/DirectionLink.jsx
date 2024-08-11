@@ -2,13 +2,11 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { imageLoader } from "../../helper";
 import Router from "next/router";
-import { API_BASE_URL } from "../../const/CustomConsts";
 const DirectionLink = ({ data, link }) => {
     const routerPath = link + data.id;
     return (
         <div>
             <div onClick={() => { Router.push(routerPath) }} className='cursor-pointer flex w-full h-full justify-center rounded-[20px] relative'>
-                {/* <Image loader={imageLoader} src={`${API_BASE_URL}/direction/${data.bgImg}`} width={600} height={400} className="rounded-[10px]" /> */}
                 <div className="block md:hidden">
                     <Image src={data.bgImg} width={600} height={600} className="rounded-[10px]" objectFit="cover" />
                 </div>

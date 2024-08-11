@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive, normalInputCss } from '../../const/CustomConsts';
+import { BtnActive, normalInputCss } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { Menu, MenuButton, MenuList, MenuItemOption, MenuOptionGroup, } from '@chakra-ui/react'
 import Editor from 'react-simple-wysiwyg';
@@ -39,7 +39,7 @@ const index = () => {
 
   useEffect(() => {
     if (detailId && detailId != 'add') {
-      axios.get(API_BASE_URL + '/blog/detail/' + detailId, {}).then((res) => {
+      axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/blog/detail/' + detailId, {}).then((res) => {
         const temp = JSON.parse(res.data.data.contents[0].content)
         setContents(temp)
         setDataDetail(res.data.data);
@@ -57,7 +57,7 @@ const index = () => {
 
   const getSeoData = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/blog/seo", {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/seo", {
       'limit': 0,
       'offset': 0
     }).then((res) => {
@@ -79,7 +79,7 @@ const index = () => {
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
     if (dataDetail.seos.length == 0) { toast.error('выбирать SEO'); return; }
     if (detailId != 'add') {
-      axios.put(API_BASE_URL + "/blog/" + detailId,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/" + detailId,
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
@@ -95,7 +95,7 @@ const index = () => {
         console.log(err);
       })
     } else {
-      axios.post(API_BASE_URL + "/blog/create",
+      axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/create",
         { ...dataDetail, contents: [{ content: JSON.stringify(contents), question: "" }] },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {

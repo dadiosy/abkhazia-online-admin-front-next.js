@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
+import { BtnActive } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import { CloseButton } from '@chakra-ui/react'
@@ -26,7 +26,7 @@ const index = () => {
 
   const getDirectionList = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/direction',
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/direction',
       {
         limit: 0,
         offset: 0
@@ -40,7 +40,7 @@ const index = () => {
 
   const getDataList = (spanSel) => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/attraction", {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction", {
       'limit': 0,
       'offset': 0,
       'directionID': directionList[spanSel].id,
@@ -69,7 +69,7 @@ const index = () => {
   }, [spanSel]);
 
   const attractionDel = (id) => {
-    axios.delete(API_BASE_URL + "/attraction/" + id,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction/" + id,
       { 'attractionID': id },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
@@ -95,7 +95,7 @@ const index = () => {
     attractionDel(selId);
   }
   const handleCheck = (id, newActive) => {
-    axios.put(API_BASE_URL + '/attraction/' + id,
+    axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/attraction/' + id,
       {
         "attraction": {
           'active': newActive

@@ -5,7 +5,7 @@ import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import Image from "next/image";
-import { API_BASE_URL, BtnActive } from '../../const/CustomConsts';
+import { BtnActive } from '../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
 import { Select } from '@chakra-ui/react'
@@ -33,7 +33,7 @@ const FaqIndex = () => {
 
   const getUsers = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/user', {
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/user', {
       params: {
         // limit: 5,
         // offset: pageNum
@@ -47,7 +47,7 @@ const FaqIndex = () => {
   }
   const getDataList = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + "/faq/admin/question",
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/question",
       {
         params: {
           'limit': limit,
@@ -67,7 +67,7 @@ const FaqIndex = () => {
 
   const deleteQuestion = () => {
     setLoading(true);
-    axios.delete(API_BASE_URL + "/faq/admin/question/" + selId,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/question/" + selId,
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
       getDataList();
@@ -102,7 +102,7 @@ const FaqIndex = () => {
   }
   const onHandleChild = (id, approve, newText) => {
     if (approve == 9) {
-      axios.put(API_BASE_URL + "/faq/admin/question/" + id,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/question/" + id,
         { active: newText }
       ).then((res) => {
         getDataList();
@@ -131,7 +131,7 @@ const FaqIndex = () => {
       setIsOpen(true);
     }
     if (approve == 1 || approve == 2) {//approve then dis
-      axios.put(API_BASE_URL + "/faq/admin/question/" + id,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/faq/admin/question/" + id,
         { approve: approve },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {
@@ -150,7 +150,7 @@ const FaqIndex = () => {
     if (!userName) { toast.error('Вставить называть'); return; }
     if (!userAvatar) { toast.error('Вставить аватар'); return; }
 
-    axios.post(API_BASE_URL + '/faq/question',
+    axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/question',
       {
         questionText: textData,
         ownerName: userName,

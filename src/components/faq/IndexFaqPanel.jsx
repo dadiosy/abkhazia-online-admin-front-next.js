@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Router from "next/router"
 import axios from "axios";
-import { API_BASE_URL } from '../../const/CustomConsts';
 import { BtnActive14 } from "../../const/CustomConsts";
 import { toast } from 'react-toastify';
 
@@ -19,7 +18,7 @@ export default function IndexFaqPanel({ id, que, ans }) {
         }
         saveData.rateArr = rateArr;
         localStorage.saveData = JSON.stringify(saveData);
-        axios.put(API_BASE_URL + '/faq/admin/answer/' + rightAns.id,
+        axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/admin/answer/' + rightAns.id,
             { 'rating': rateValue }
         ).then((res) => {
             if (res.data.statusCode == 200) {

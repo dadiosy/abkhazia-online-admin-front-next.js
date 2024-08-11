@@ -7,7 +7,7 @@ import Footer from "../components/layout/Footer";
 import Link from "next/link";
 import ActivePin from "../../../public/img/SVG/ActivePin";
 import InActivePin from "../../../public/img/SVG/InActivePin";
-import { API_BASE_URL, BtnActive, BtnMiniCss, normalInputCss } from '../../const/CustomConsts';
+import { BtnActive, BtnMiniCss, normalInputCss } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import { Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, } from '@chakra-ui/react'
@@ -55,7 +55,7 @@ const AttractionIndexPage = () => {
   };
   const getDirectionList = () => {
     setLoading(true);
-    axios.get(API_BASE_URL + '/direction',
+    axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/direction',
       {
         limit: 0,
         offset: 0
@@ -76,7 +76,7 @@ const AttractionIndexPage = () => {
 
   useEffect(() => {
     if (detailId >= 0) {
-      axios.get(API_BASE_URL + '/attraction/' + detailId,
+      axios.get(process.env.NEXT_PUBLIC_API_BASE_URL + '/attraction/' + detailId,
         {
           // 'attractionID': detailId
         }).then((res) => {
@@ -116,7 +116,7 @@ const AttractionIndexPage = () => {
     });
   }
   const handleDelete = () => {
-    axios.delete(API_BASE_URL + "/attraction/" + detailId,
+    axios.delete(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction/" + detailId,
       // { 'attractionID': detailId },
       { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
     ).then((res) => {
@@ -158,7 +158,7 @@ const AttractionIndexPage = () => {
     if (update1.length > 0) updateData.contents.update = update1;
     if (removeArray.length > 0) updateData.contents.remove = removeArray;
     if (detailId != 'add') {
-      axios.put(API_BASE_URL + "/attraction/" + detailId,
+      axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction/" + detailId,
         { ...updateData }
       ).then((res) => {
         if (res.data.statusCode == 200) {
@@ -173,7 +173,7 @@ const AttractionIndexPage = () => {
         console.log(err);
       })
     } else {
-      axios.post(API_BASE_URL + "/attraction",
+      axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction",
         { ...dataDetail },
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
       ).then((res) => {

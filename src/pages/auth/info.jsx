@@ -5,7 +5,6 @@ import Image from "next/image";
 import Router from "next/router";
 import axios from "axios";
 import { useDropzone } from 'react-dropzone';
-import { API_BASE_URL } from '../../const/CustomConsts';
 import { ToastContainer, toast } from 'react-toastify';
 import NavBar from "../components/layout/NavBar";
 
@@ -40,7 +39,7 @@ const MyInfoPage = () => {
 		setPasswordFlag(false);
 	}
 	const passUpdate = () => {
-		axios.post(API_BASE_URL + "/auth/changePwd",
+		axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/changePwd",
 			{
 				id: userInfo.id,
 				oldPassword: newUserData.oldPassword,
@@ -91,7 +90,7 @@ const MyInfoPage = () => {
 						<div className="flex flex-col gap-2">
 							<div className='text-center mt-1'>
 								<Image className="rounded-8 border object-cover rounded-[100px]" height={100} width={100}
-									src={userInfo?.avatar ? `${API_BASE_URL}/avatar/${userInfo.avatar}` : '/icon/avatar.png'} />
+									src={userInfo?.avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/avatar/${userInfo.avatar}` : '/icon/avatar.png'} />
 							</div>
 							<div className=''>
 								<div className="font-semibold text-red-600 hover:text-red-500 text-center">

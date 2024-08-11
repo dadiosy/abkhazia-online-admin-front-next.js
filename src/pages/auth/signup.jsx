@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import Image from "next/image";
 import Router from "next/router";
 import axios from "axios";
-import { API_BASE_URL } from '../../const/CustomConsts';
 import NavBar from "../components/layout/NavBar";
 import { toast } from 'react-toastify';
 
@@ -62,7 +61,7 @@ const SignPage = () => {
 		if (avatar.file) { formData.append('avatar', avatar.file); }
 		console.log(avatar.file)
 		try {
-			const res = await axios.post(API_BASE_URL + '/auth/signup', formData, {
+			const res = await axios.post(process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/signup', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					'Access-Control-Allow-Origin': 'http://staff.daisa.ru'

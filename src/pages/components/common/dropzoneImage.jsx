@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import DropBox from './DropBox';
 import copy from 'clipboard-copy';
 import axios from "axios";
-import { API_BASE_URL } from '../../../const/CustomConsts';
 import Image from "next/image";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/button'
@@ -30,14 +29,14 @@ const DropZoneImage = ({ pathStr }) => {
         formData.append('image', imgFile);
         setUploading(true);
         try {
-            const res = await axios.post(`${API_BASE_URL}/img/${pathStr}`, formData, {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/${pathStr}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             setImages((prevState) => [
                 ...prevState,
-                { path: res.data.data, serverPath: `${API_BASE_URL}/img/${pathStr}/${res.data.data}` },
+                { path: res.data.data, serverPath: `${process.env.NEXT_PUBLIC_API_BASE_URL}/img/${pathStr}/${res.data.data}` },
             ]);
 
         } catch (error) {

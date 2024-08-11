@@ -2,7 +2,6 @@ import Image from "next/image";
 import Heart from "../../../public/img/SVG/Heart";
 import moment from "moment";
 import 'moment/locale/ru';
-import { API_BASE_URL } from '../../const/CustomConsts';
 
 const AnswerPanel = ({ userName, avatar, answer, aDate, feedCount, handleFeed }) => {
     moment.locale('ru'); // Set locale to Russian
@@ -11,7 +10,7 @@ const AnswerPanel = ({ userName, avatar, answer, aDate, feedCount, handleFeed })
         <div className="flex gap-3 font-Manrop">
             <div className="pr-2">
                 <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7]">
-                    <Image src={avatar ? `${API_BASE_URL}/avatar/${avatar}` : '/icon/avatar.png'}
+                    <Image src={avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/avatar/${avatar}` : '/icon/avatar.png'}
                         width={56} height={56} objectFit="cover" className="rounded-full"
                     />
                 </div>
