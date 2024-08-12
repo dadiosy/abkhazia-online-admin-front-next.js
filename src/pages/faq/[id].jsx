@@ -6,7 +6,7 @@ import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import { BtnActive } from '../../const/CustomConsts';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
 import { Select } from '@chakra-ui/react'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
@@ -185,7 +185,7 @@ const FaqDetail = () => {
               onClick={getDataList}>Поиск</button></div>
           </div>
           {dataList ? (
-            <div className="flex flex-col justify-center gap-3">
+            <div className="flex flex-col justify-center gap-3 w-full">
               <div className="flex gap-8">
                 <div className="flex flex-col items-center justify-center w-12 md:w-20 ">
                   <div className="flex w-[56] h-[56] rounded-full bg-[#D7D7D7]">
