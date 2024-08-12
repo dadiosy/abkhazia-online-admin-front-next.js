@@ -15,7 +15,7 @@ export default function ImgAttractionPanel({ data, link }) {
         <div>
             <div className="hidden md:block ">
                 <div className="flex items-center gap-2 md:gap-4">
-                    <Image className="cursor-pointer" src={'/icon/ArrowLeft.png'} width={56} height={48} layout="fixed"
+                    <img className="cursor-pointer" src={'/icon/ArrowLeft.png'} width={56} height={48} layout="fixed"
                         onClick={() => handleArrowClick(-1)} />
                     <div className="grid grid-cols-3 w-full gap-4">
                         {
@@ -26,7 +26,7 @@ export default function ImgAttractionPanel({ data, link }) {
                             ))
                         }
                     </div>
-                    <Image className="cursor-pointer" src={'/icon/ArrowRight.png'} width={56} height={48} layout="fixed"
+                    <img className="cursor-pointer" src={'/icon/ArrowRight.png'} width={56} height={48} layout="fixed"
                         onClick={() => handleArrowClick(1)} />
                 </div>
             </div>

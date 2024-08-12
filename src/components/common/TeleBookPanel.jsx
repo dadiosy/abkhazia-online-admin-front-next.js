@@ -8,7 +8,7 @@ export default function TeleBookPanel() {
             {/* Telegram */}
             <div className="flex flex-col lg:flex-row w-full max-w-[1200px] px-4 md:px-4 py-8 md:py-[60px] gap-5 md:gap-10 ">
                 <div className="hidden xl:flex w-[23%]">
-                    <Image src='/img/Tele_Avatar.png' width={600} height={400} alt="logo" />
+                    <img src='/img/Tele_Avatar.png' width={600} height={400} alt="logo" />
                 </div>
                 <div className="flex flex-1 flex-col md:flex-row justify-between gap-10">
                     <div className="flex flex-col gap-y-6">
@@ -31,24 +31,24 @@ export default function TeleBookPanel() {
                         <div className="flex justify-between md:justify-start">
                             <div className="flex flex-col md:flex-row gap-x-4 xl:gap-x-8 gap-y-3 md:gap-y-0">
                                 <div className="flex items-center gap-x-2">
-                                    <Image src='/img/SVG/Transfer.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/Transfer.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Трансферы</h6>
                                     <div className="block md:hidden class-btn"> Трансферы</div>
                                 </div>
                                 <div className="flex items-center gap-x-2">
-                                    <Image src='/img/SVG/Routing.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/Routing.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Экскурсии</h6>
                                     <div className="block md:hidden class-btn"> Экскурсии</div>
                                 </div>
                                 <div className="flex items-center gap-x-2">
-                                    <Image src='/img/SVG/House.svg' width={24} height={24} objectFit="cover" />
+                                    <img src='/img/SVG/House.svg' width={24} height={24} className="object-cover " />
                                     <h6 className="hidden md:block"> Отели</h6>
                                     <div className="block md:hidden class-btn"> Отели</div>
                                 </div>
                             </div>
                             <div className="flex md:hidden flex-col w-[30%] gap-2 items-center">
                                 <div className="rounded-3xl bg-white p-2">
-                                    <Image src={'/img/qr.svg'} width={100} height={100} alt="QR" />
+                                    <img src={'/img/qr.svg'} width={100} height={100} alt="QR" />
                                 </div>
                                 <button className="text-[14px] font-normal text-[#FF6432] text-center"
                                     onClick={() => { Router.push('/') }}>
@@ -65,7 +65,7 @@ export default function TeleBookPanel() {
                     </div>
                     <div className="hidden md:flex flex-col items-center justify-between">
                         <div className="rounded-3xl bg-white p-2 xl:p-6">
-                            <Image src={'/img/qr.svg'} width={150} height={150} layout="fixed" alt="QR" />
+                            <img src={'/img/qr.svg'} width={150} height={150} layout="fixed" alt="QR" />
                         </div>
                         <div className="px-4 py-1 xl:py-3">
                             <button className={`${BtnActive}`}

@@ -1,7 +1,6 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import Router from "next/router";
-import { imageLoader } from "../../helper";
 const AttractionLink = ({ data, link }) => {
     const routerPath = link + data.id;
     return (

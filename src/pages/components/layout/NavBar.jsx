@@ -37,7 +37,7 @@ export default function NavBar() {
         <div className="flex flex-row w-full px-4 md:px-[8.333333333%] justify-between items-center">
           <div className="flex cursor-pointer"
             onClick={() => { Router.push('/') }}>
-            <Image src='/img/logo.png' width={150} height={60} alt="logo" objectFit="fill" />
+            <img src='/img/logo.png' width={150} height={60} alt="logo" className="object-fill" />
           </div>
           <div className="flex gap-x-2 md:gap-x-10 ">
             <div className="class-p2 hover:text-[#FF6432] !text-[14px] md:!text-[18px]">

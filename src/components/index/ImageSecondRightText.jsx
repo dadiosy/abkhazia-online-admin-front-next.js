@@ -8,7 +8,7 @@ export default function ImageSecondRightText({ imgSrc }) {
       <div className="flex gap-3 md:gap-4">
         <div className="flex w-[16%] md:w-[24%] cursor-pointer"
           onClick={() => { Router.push('/') }}>
-          <Image
+          <img
             src={imgSrc}
             alt="blog"
             width={136}
@@ -24,7 +24,7 @@ export default function ImageSecondRightText({ imgSrc }) {
             </div>
             <div className="hidden md:flex flex-col relative">
               <div className="absolute right-1 top-0 -z-4">
-                <Image src='/img/vector.svg' width={50} height={28} />
+                <img src='/img/vector.svg' width={50} height={28} />
               </div>
               <span className="flex self-end z-10 pr-3 text-white text-[18px] text-center tracking-[3%] font-semibold">
                 9.6
@@ -69,7 +69,7 @@ export default function ImageSecondRightText({ imgSrc }) {
         </div>
         <div className="flex flex-col relative">
           <div className="absolute right-0 -z-4">
-            <Image src='/img/vector.svg' width={44} height={24.5} />
+            <img src='/img/vector.svg' width={44} height={24.5} />
           </div>
           <span className="flex self-end z-10 pt-0 pr-1.5 text-white text-sm md:text-lg text-center tracking-[3%] font-semibold">
             9.6

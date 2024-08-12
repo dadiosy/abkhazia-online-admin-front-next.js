@@ -456,7 +456,7 @@ const AttractionIndexPage = () => {
       if (selText == "") { toast.error('вставить текст'); return; }
       let addContent = "";
       if (addText == "") addContent = `<${tagName}>${selText}</${tagName}>`;
-      else addContent = `<${tagName}><Image src="${addText}"/>${selText}</${tagName}>`;
+      else addContent = `<${tagName}><img src="${addText}"/>${selText}</${tagName}>`;
 
       setDataDetail({
         ...dataDetail,
@@ -499,7 +499,7 @@ const AttractionIndexPage = () => {
               <div className="flex flex-col justify-center items-center gap-2">
                 <IconList />
                 <div className='justify-center items-center'>
-                  <Image src={dataDetail.bgImg} width={300} height={180} className='object-cover rounded-md shadow-xl' />
+                  <img src={dataDetail.bgImg} width={300} height={180} className='object-cover rounded-md shadow-xl' />
                 </div>
                 <DropzoneImage pathStr="attraction" />
               </div>
@@ -913,7 +913,7 @@ const AttractionIndexPage = () => {
                 <div className="w-full lg:w-[58%] bg-slate-100  rounded-xl">
                   <div className="flex flex-col gap-5 m-5">
                     <div className="relative">
-                      <Image src={dataDetail.bgImg} width={600} height={400} className="rounded-[10px]" />
+                      <img src={dataDetail.bgImg} width={600} height={400} className="rounded-[10px]" />
                       <div className="absolute bottom-10 left-5 text-2xl md:text-3xl font-bold text-white text-shadow-lg">{dataDetail.name}</div>
                     </div>
                     <div className="text-xl font-bold">{dataDetail.heading}</div>

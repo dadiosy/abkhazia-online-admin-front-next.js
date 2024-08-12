@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import DropBox from './DropBox';
 import copy from 'clipboard-copy';
 import axios from "axios";
-import Image from "next/image";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/button'
 import { TailSpin } from "react-loader-spinner";
@@ -87,11 +86,10 @@ const DropZoneImage = ({ pathStr }) => {
             <div className="flex flex-col justify-center items-center gap-2">
                 {images.map((v, i) => (
                     <div key={i} onClick={() => { setImgPath(v.serverPath); setIsOpen(true); }} className='cursor-pointer  justify-center items-center'>
-                        <Image src={v.serverPath} width={300} height={180} className='object-cover rounded-md shadow-xl' />
+                        <img src={v.serverPath} width={300} height={180} className='object-cover rounded-md shadow-xl' />
                     </div>
                 ))}
             </div>
-            {/* <div className='text-center'>{imgPath}</div> */}
         </div>
     );
 }
