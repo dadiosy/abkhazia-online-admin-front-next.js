@@ -1,20 +1,44 @@
-import { useState } from "react"
-import Image from "next/image";
+import { useState, useCallback } from "react"
 import Heart from "../../../../public/img/SVG/Heart";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'moment/locale/ru';
 import { TrashFill, HandThumbsDown, HandThumbsUp } from 'react-bootstrap-icons';
 import { BtnActive14 } from '../../../const/CustomConsts';
+import { useDropzone } from "react-dropzone";
 
 const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, active, handleChild }) => {
+
+  const axiosFunc = async (imgFile) => {
+    const formData = new FormData();
+    formData.append('image', imgFile);
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      handleEditAnswer('ownerAvatar', `${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar/${res.data.data}`)
+    } catch (error) {
+      toast.error('Error uploading file:', error);
+    }
+  }
+  const onDrop = useCallback((acceptedFiles) => {
+    acceptedFiles.map((file, index) => {
+      const reader = new FileReader();
+      axiosFunc(file);
+      reader.readAsDataURL(file);
+      return file;
+    });
+  }, []);
+  const { getRootProps, getInputProps, acceptedFiles, open, }
+    = useDropzone({ accept: '*', onDrop, noClick: true, noKeyboard: true, });
   const [rateTextValue, setRateTextValue] = useState("nothing");
   const [authorName, setAuthorName] = useState("nothing")
   const [answerText, setAnswerText] = useState("nothing");
   const [creationDate, setCreationDate] = useState(aDate.split("T")[0])
 
-  // moment.locale('ru'); // Set locale to Russian
-  // const dayStr = moment(creationDate).format('DD MMMM YYYY');
+  
 
   const handleEditAnswer = (field, newValue) => {
     var saveData = JSON.parse(localStorage?.saveData || null) || {};
@@ -27,6 +51,7 @@ const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, 
       if (field == 'answerText') updateData.answerText = answerText
       if (field == 'ownerName') updateData.ownerName = authorName
       if (field == 'creationDate') updateData.creationDate = newValue
+      if (field == 'ownerAvatar') updateData.ownerAvatar = newValue
       axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/admin/answer/' + id,
         updateData,
         { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
@@ -48,10 +73,13 @@ const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, 
     <div className={"flex gap-3 border border-l border-gray-100 shadow-lg rounded-lg p-5 min-w-[600px]" + (approve == 1 ? " bg-green-50" : "")}>
       <div className="mr-4">
         <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7]">
-          <img src={avatar ? avatar : '/icon/avatar.png'}
-            width={56} height={56}
-            className="object-cover rounded-full"
-          />
+          <div className="dropbox" {...getRootProps({})} >
+            <input {...getInputProps()} />
+            <img src={avatar ? avatar : '/icon/avatar.png'}
+              onClick={open}
+              className="object-cover rounded-full w-14 h-14"
+            />
+          </div>
         </div>
       </div>
       <div className="w-full">

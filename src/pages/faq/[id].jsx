@@ -190,8 +190,7 @@ const FaqDetail = () => {
                 <div className="flex flex-col items-center justify-center w-12 md:w-20 ">
                   <div className="flex w-[56] h-[56] rounded-full bg-[#D7D7D7]">
                     <img src={dataList.ownerAvatar ? dataList.ownerAvatar : '/icon/avatar.png'}
-                      width={56} height={56}
-                      className="object-cover rounded-full"
+                      className="object-cover rounded-full w-14 h-14"
                     />
                   </div>
                 </div>
@@ -226,7 +225,7 @@ const FaqDetail = () => {
           <div className="flex flex-col md:flex-row w-full px-[5%]">
             <div className="pl-2 pr-8 pb-4">
               <div className="flex rounded-full bg-[#D7D7D7] justify-center w-[56px]">
-                <img src={userAvatar ? userAvatar : '/icon/avatar.png'} width={56} height={56} className="rounded-full"
+                <img src={userAvatar ? userAvatar : '/icon/avatar.png'} className="rounded-full w-14 h-14"
                   onClick={() => {
 
                   }} />
