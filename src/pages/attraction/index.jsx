@@ -5,9 +5,8 @@ import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import { BtnActive } from '../../const/CustomConsts';
 import { TailSpin } from "react-loader-spinner";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { CloseButton } from '@chakra-ui/react'
-import Image from "next/image";
 import Router from "next/router";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 
@@ -96,11 +95,10 @@ const index = () => {
   }
   const handleCheck = (id, newActive) => {
     axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/attraction/' + id,
-      {
-        "attraction": {
-          'active': newActive
-        }
-      }).then((res) => {
+      { 'active': newActive },
+      { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+    )
+      .then((res) => {
         getDataList(spanSel);
       }).catch((err) => {
         console.log(err);
