@@ -36,7 +36,7 @@ const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, 
   const [rateTextValue, setRateTextValue] = useState("nothing");
   const [authorName, setAuthorName] = useState("nothing")
   const [answerText, setAnswerText] = useState("nothing");
-  const [creationDate, setCreationDate] = useState(aDate.split("T")[0])
+  const [creationDate, setCreationDate] = useState(aDate)
 
   
 

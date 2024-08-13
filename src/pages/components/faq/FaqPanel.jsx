@@ -38,7 +38,7 @@ const FaqPanel = ({ id, questionText, creationDate, answers, userName, userAvata
 
     const [qText, setQText] = useState("nothing");
     const [authorName, setAuthorName] = useState("nothing");
-    const [cDate, setCreationDate] = useState(creationDate.split("T")[0])
+    const [cDate, setCreationDate] = useState(creationDate)
 
     const handleEditQuestion = (field, newValue) => {
         var saveData = JSON.parse(localStorage?.saveData || null) || {};
