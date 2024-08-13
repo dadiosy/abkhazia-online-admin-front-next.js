@@ -1,26 +1,19 @@
 import { NextSeo } from "next-seo";
 import { useState, useEffect } from "react"
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 import axios from "axios";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
-import Image from "next/image";
 import { BtnActive } from '../../const/CustomConsts';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { TailSpin } from "react-loader-spinner";
-import { Select } from '@chakra-ui/react'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import FaqPanel from "../components/faq/FaqPanel";
 import DropzoneImage from "../components/faq/dropzoneImage";
-import { getAdapter } from "axios";
 
 const FaqIndex = () => {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const [users, setUsers] = useState(null);
-  const [searchText, setSearchText] = useState("");
-  const [searchUser, setSearchUser] = useState("");
-  const [searchState, setSearchState] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selId, setSelId] = useState(null);
   const [pageNum, setPageNum] = useState(0);
@@ -29,6 +22,8 @@ const FaqIndex = () => {
   const [textData, setTextData] = useState('');
   const [userName, setUserName] = useState('');
   const [userAvatar, setUserAvatar] = useState(null);
+  const [uniqueLink, setUniqueLink] = useState("")
+
   const handleNewImg = (newImgPath) => { setUserAvatar(newImgPath); }
   const limit = 6;
 
@@ -40,7 +35,6 @@ const FaqIndex = () => {
         // offset: pageNum
       }
     }).then((res) => {
-      setUsers(res.data.data);
       setLoading(false);
     }).catch((err) => {
       console.log(err);
@@ -53,9 +47,9 @@ const FaqIndex = () => {
         params: {
           'limit': limit,
           'offset': pageNum * limit,
-          "approve": searchState,
-          "text": searchText,
-          "userID": searchUser
+          "approve": "",
+          "text": "",
+          "userID": ""
         }
       }).then((res) => {
         setDataList(res.data.data);
@@ -139,6 +133,7 @@ const FaqIndex = () => {
   }
   const handleCreateQuestion = () => {
     if (textData == "") { toast.error('Напишите текст ответа!'); return; }
+    if (uniqueLink == "") { toast.error('Требуется уникальная ссылка!'); return; }
     if (!userName) { toast.error('Вставить называть'); return; }
     if (!userAvatar) { toast.error('Вставить аватар'); return; }
 
@@ -146,7 +141,8 @@ const FaqIndex = () => {
       {
         questionText: textData,
         ownerName: userName,
-        ownerAvatar: userAvatar
+        ownerAvatar: userAvatar,
+        uniqueLink: uniqueLink
       }, {
       headers: {
         'Authorization': `Bearer ${userInfo.token}`
@@ -215,12 +211,29 @@ const FaqIndex = () => {
                 rows={2} // Number of visible rows
                 cols={40}
               />
+              <div className="text-lg p-4 flex flex-row gap-4">
+                <div className="w-20 mt-2 text-[14px]">URL</div>
+                <input
+                  name="uniqueLink"
+                  placeholder="Введите уникальную ссылку"
+                  required
+                  onChange={e => setUniqueLink(e.target.value)}
+                  className="w-full rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1"
+                  value={uniqueLink}
+                />
+              </div>
+              <div className="text-lg p-4 flex flex-row gap-4">
+                <div className="w-20 mt-2 text-[14px]">Название</div>
+                <input
+                  name="userName"
+                  placeholder="Введите имя пользователя"
+                  required
+                  value={userName}
+                  className="w-full rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1"
+                  onChange={(e) => { setUserName(e.target.value) }}
+                />
+              </div>
               <div className="flex p-4 justify-between gap-4">
-                <div className="text-lg flex flex-row gap-4">
-                  <div className="mt-2 text-[14px]">Название</div>
-                  <input name="userName" value={userName} className="w-full rounded-md border border-1 border-gray-300 px-3 py-1 text-gray-900 shadow-md focus:ring-1 text-center"
-                    onChange={(e) => { setUserName(e.target.value) }} />
-                </div>
                 <div className="text-lg flex flex-row gap-4">
                   <DropzoneImage onChildData={handleNewImg} />
                 </div>
