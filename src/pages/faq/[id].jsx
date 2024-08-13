@@ -212,7 +212,7 @@ const FaqDetail = () => {
                     userName={v.ownerName}
                     avatar={v.ownerAvatar}
                     answer={v.answerText}
-                    aDate={v.createAt}
+                    aDate={v.creationDate}
                     feedCount={v.rating}
                     approve={v.approve}
                     active={v.isRight}

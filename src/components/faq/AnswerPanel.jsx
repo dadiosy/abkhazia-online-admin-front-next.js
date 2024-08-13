@@ -11,7 +11,7 @@ const AnswerPanel = ({ userName, avatar, answer, aDate, feedCount, handleFeed })
             <div className="pr-2">
                 <div className="flex w-[56px] h-[56px] rounded-full bg-[#D7D7D7]">
                     <Image src={avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/avatar/${avatar}` : '/icon/avatar.png'}
-                        width={56} height={56} objectFit="cover" className="rounded-full"
+                        objectFit="cover" className="rounded-full w-14 h-14"
                     />
                 </div>
             </div>

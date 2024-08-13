@@ -21,9 +21,8 @@ const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar })
                 <div className="flex gap-3">
                     <div className="flex">
                         <img src={userAvatar ? userAvatar : '/icon/avatar.png'}
-                            width={56} height={56}
                             alt="User"
-                            className="object-cover rounded-full"
+                            className="object-cover rounded-full w-14 h-14"
                         />
                     </div>
                     <div className="space-y-1">

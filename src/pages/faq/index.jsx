@@ -12,6 +12,7 @@ import { Select } from '@chakra-ui/react'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
 import FaqPanel from "../components/faq/FaqPanel";
 import DropzoneImage from "../components/faq/dropzoneImage";
+import { getAdapter } from "axios";
 
 const FaqIndex = () => {
   const [loading, setLoading] = useState(false);
@@ -115,16 +116,7 @@ const FaqIndex = () => {
       })
     }
     if (approve == 8) { //edit
-      const updatedList = dataList.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            questionText: newText,
-          };
-        }
-        return item;
-      });
-      setDataList(updatedList);
+      getDataList()
     }
     if (approve == -1) {  //delete
       setSelId(id);
@@ -181,36 +173,6 @@ const FaqIndex = () => {
       <div className="flex flex-col container mx-auto max-w-[1440px]  mt-[60px] md:mt-[94px]">
         {loading ? (<div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div>) : null}
         <div className="px-4 md:px-[8.333333333%] items-center flex flex-col justify-center">
-          {/* <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-10 my-5 px-4 py-2 shadow-md rounded-md">
-            <div>
-              <Select placeholder='Пользователь' size='md' value={searchUser} className="cursor-pointer"
-                onChange={(e) => { setSearchUser(e.target.value) }}
-              // bg='tomato' borderColor='tomato' color='white'
-              >
-                {users?.map((v, i) => (
-                  <option key={i} value={v.id}>{v.firstName} {v.lastName}</option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <input id="searchText" placeholder="" value={searchText}
-                className="w-full border font-semibold rounded-md py-1 placeholder:text-gray-400 px-3 text-lg"
-                onChange={(e) => { setSearchText(e.target.value) }}
-              />
-            </div>
-            <div>
-              <Select placeholder='Состояние' size='md' value={searchState} className="cursor-pointer"
-                onChange={(e) => { setSearchState(e.target.value) }}
-              // bg='tomato' borderColor='tomato' color='white'
-              >
-                <option value='0'>В ожидании</option>
-                <option value='1'>Утвердить</option>
-                <option value='2'>Отклонить</option>
-              </Select>
-            </div>
-            <div><button className={BtnActive}
-              onClick={getDataList}>Поиск</button></div>
-          </div> */}
           <div className="flex flex-col  justify-center gap-10 my-5">
             <div className="flex flex-col gap-5">
               {dataList?.map((v, i) => (
@@ -218,7 +180,7 @@ const FaqIndex = () => {
                   key={i}
                   id={v.id}
                   questionText={v.questionText}
-                  createAt={v.createAt}
+                  creationDate={v.creationDate}
                   answers={v.answers}
                   approve={v.approve}
                   userName={v.ownerName}
@@ -241,7 +203,7 @@ const FaqIndex = () => {
           <div className="flex flex-col md:flex-row w-full px-[5%] pb-4">
             <div className="pl-2 pr-8 pb-4">
               <div className="flex rounded-full bg-[#D7D7D7] justify-center w-[56px]">
-                <img src={userAvatar ? userAvatar : '/icon/avatar.png'} width={56} height={56} className="rounded-full" />
+                <img src={userAvatar ? userAvatar : '/icon/avatar.png'} className="object-cover w-14 h-14 rounded-full" />
               </div>
             </div>
             <div className="flex flex-col w-full md:w-[90%] border border-[#D7D7D7] rounded-xl shadow">

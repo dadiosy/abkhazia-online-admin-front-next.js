@@ -1,74 +1,130 @@
 import Router from "next/router";
-import { useState } from "react"
-import Image from "next/image";
-import moment from "moment";
+import { useState, useCallback } from "react"
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'moment/locale/ru';
-import { TrashFill, HandThumbsDown, HandThumbsUp, Pen, Textarea } from 'react-bootstrap-icons';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react'
-import { BtnActive, BtnActive14 } from '../../../const/CustomConsts';
+import { TrashFill, HandThumbsDown, HandThumbsUp } from 'react-bootstrap-icons';
+import { BtnActive14 } from '../../../const/CustomConsts';
+import { useDropzone } from "react-dropzone";
 
-const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar, approve, active, handleChild }) => {
-    const [isOpenEdit, setIsOpenEdit] = useState(false);
-    const [newText, setNewText] = useState(questionText);
+const FaqPanel = ({ id, questionText, creationDate, answers, userName, userAvatar, approve, active, handleChild }) => {
+    const axiosFunc = async (imgFile) => {
+        const formData = new FormData();
+        formData.append('image', imgFile);
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            handleEditQuestion('ownerAvatar', `${process.env.NEXT_PUBLIC_API_BASE_URL}/img/avatar/${res.data.data}`)
+        } catch (error) {
+            toast.error('Error uploading file:', error);
+        }
+    }
 
-    let faqDay = moment(createAt).format("DD MMMM YYYY");
-    const today = moment().format("DD MMMM YYYY");
-    const beforeDay = moment().add(-1, 'days').format("DD MMMM YYYY");
-    if (faqDay == today) { faqDay = 'Сегодня'; }
-    if (faqDay == beforeDay) { faqDay = 'Вчера'; }
-    const [isEllipsis, setIsEllipsis] = useState(true);
+    const onDrop = useCallback((acceptedFiles) => {
+        acceptedFiles.map((file, index) => {
+            const reader = new FileReader();
+            axiosFunc(file);
+            reader.readAsDataURL(file);
+            return file;
+        });
+    }, []);
 
-    const handleEditQuestion = () => {
+    const { getRootProps, getInputProps, acceptedFiles, open, }
+        = useDropzone({ accept: '*', onDrop, noClick: true, noKeyboard: true, });
+
+
+    const [qText, setQText] = useState("nothing");
+    const [authorName, setAuthorName] = useState("nothing");
+    const [cDate, setCreationDate] = useState(creationDate.split("T")[0])
+
+    const handleEditQuestion = (field, newValue) => {
         var saveData = JSON.parse(localStorage?.saveData || null) || {};
         const userInfo = saveData.userInfo;
         if (!userInfo) { toast.error('Пожалуйста, войдите'); }
         else {
-            if (newText == "") { toast.error('Напишите текст ответа!'); }
-            else {
-                axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/admin/question/' + id,
-                    { questionText: newText },
-                    { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
-                ).then((res) => {
-                    if (res.data.statusCode == 200) {
-                        toast.success('sucess');
-                        handleChild(id, 8, newText);
-                    }
-                }).catch((err) => {
-                    if (err.response?.status == 401) {
-                        toast.error("пожалуйста, войдите в систему");
-                        Router.push('/auth/login');
-                    }
-                    console.log(err);
-                });
-                setIsOpenEdit(false);
-                // setNewText('');
-            }
+            let updateData = {};
+            if (field == 'ownerName') updateData.ownerName = authorName
+            if (field == 'active') updateData.active = !active
+            if (field == 'questionText') updateData.questionText = qText
+            if (field == 'creationDate') updateData.creationDate = newValue
+            if (field == 'ownerAvatar') updateData.ownerAvatar = newValue
+
+            axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + '/faq/admin/question/' + id,
+                updateData,
+                { headers: { 'Authorization': `Bearer ${userInfo.token}` } }
+            ).then((res) => {
+                if (res.data.statusCode == 200) {
+                    toast.success('sucess');
+                    handleChild(id, 8);
+                }
+            }).catch((err) => {
+                if (err.response?.status == 401) {
+                    toast.error("пожалуйста, войдите в систему");
+                    Router.push('/auth/login');
+                }
+                console.log(err);
+            });
         }
     }
+
     return (
-        <div className="flex flex-col w-full md:min-w-[500px] rounded-xl p-5 space-y-4 bg-white border border-[#D7D7D7] shadow">
-            <p className={`text-lg md:text-xl font-bold ${isEllipsis ? 'custom-ellipsis-one' : 'flex-wrap'}`}
-                onClick={() => { setIsEllipsis(!isEllipsis) }}>
-                {questionText}
-            </p>
+        <div className={"flex flex-col w-full md:min-w-[500px] rounded-xl p-5 space-y-4 border border-[#D7D7D7] shadow" + (approve == 1 ? " bg-green-50" : "")}>
+            {
+                qText == "nothing" ?
+                    <p className={`text-lg md:text-xl font-bold custom-ellipsis-one`}
+                        onClick={e => setQText(questionText)}>
+                        {questionText}
+                    </p>
+                    :
+                    <textarea
+                        autoFocus
+                        value={qText}
+                        onChange={e => setQText(e.target.value)}
+                        className={"text-base md:text-lg xl:text-xl font-extrabold w-auto" + (approve == 1 ? " bg-green-50" : "")}
+                        onKeyUp={(e) => {
+                            if (e.key == 'Escape') setQText("nothing");
+                            if (e.key == 'Enter') { handleEditQuestion('questionText'); setQText("nothing"); }
+                        }}
+                        onBlur={e => setQText("nothing")}
+                    />
+            }
             <div className="flex flex-col md:flex-row justify-between md:items-end gap-8">
                 <div className="flex gap-3">
-                    <div className="flex w-[56px] h-[56px]">
+                    <div className="dropbox" {...getRootProps({})}>
+                        <input {...getInputProps()} />
                         <img src={userAvatar ? userAvatar : '/icon/avatar.png'}
-                            width={56} height={56}
-                            alt="User"
-                            className="object-cover rounded-full"
+                            onClick={open}
+                            className="object-cover rounded-full w-14 h-14"
                         />
                     </div>
                     <div className="space-y-1">
-                        <p className="text-base md:text-lg font-medium">
-                            {userName}
-                        </p>
-                        <p className="text-xs md:text-base font-medium text-[#919494]">
-                            {faqDay}
-                        </p>
+                        {
+                            authorName == 'nothing' ?
+                                <p className="text-base md:text-lg xl:text-xl font-extrabold" onClick={e => setAuthorName(userName)}>
+                                    {userName}
+                                </p>
+                                :
+                                <input
+                                    autoFocus
+                                    value={authorName}
+                                    onChange={e => setAuthorName(e.target.value)}
+                                    className={"text-base md:text-lg xl:text-xl font-extrabold block" + (approve == 1 ? " bg-green-50" : "")}
+                                    onKeyUp={(e) => {
+                                        if (e.key == 'Escape') setAuthorName("nothing");
+                                        if (e.key == 'Enter') { handleEditQuestion('ownerName'); setAuthorName("nothing"); }
+                                    }}
+                                    onBlur={e => setAuthorName("nothing")}
+                                />
+                        }
+                        <input
+                            type="date"
+                            className={"text-xs md:text-sm xl:text-base font-medium text-[#919494]" + (approve == 1 ? " bg-green-50" : "")}
+                            value={cDate}
+                            onChange={e => { setCreationDate(e.target.value); handleEditQuestion('creationDate', e.target.value); }}
+                        />
                     </div>
                 </div>
                 {answers ? (
@@ -76,19 +132,15 @@ const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar, a
                         <div onClick={() => { handleChild(id, -1); }} className="mt-3 cursor-pointer">
                             <TrashFill size={20} color="#FF6432" />
                         </div>
-                        <button className={BtnActive14}
-                            onClick={() => { setIsOpenEdit(true) }}>
-                            Обновить  <Pen className="mt-1" color="black" />
-                        </button>
                         {approve == 1 ? (
                             <button className={BtnActive14}
                                 onClick={() => { handleChild(id, 2); }}>
-                                Неодобрить < HandThumbsDown className="mt-1" color="black" />
+                                Отменить публикацию < HandThumbsDown className="mt-1" color="black" />
                             </button>
                         ) : (
                             <button className={BtnActive14}
                                 onClick={() => { handleChild(id, 1); }}>
-                                Одобрить  <HandThumbsUp className="mt-1" color="black" />
+                                Публиковать  <HandThumbsUp className="mt-1" color="black" />
                             </button>
                         )}
                         {answers?.length != 0 && (
@@ -109,39 +161,13 @@ const FaqPanel = ({ id, questionText, createAt, answers, userName, userAvatar, a
                             onChange={() => { }}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleChild(id, 9, !active);
+                                handleEditQuestion('active');
                             }} />
                     </div>
                 ) : null}
 
             </div>
-            <Modal isOpen={isOpenEdit} onClose={() => { setIsOpenEdit(false) }} size="3xl">
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader className="bg-gray-100">Обновить</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody className="bg-red-100">
-                        <textarea
-                            className="outline-none p-4 w-full rounded-xl text-lg font-medium"
-                            placeholder="Написать ответ"
-                            value={newText}
-                            onChange={(e) => { setNewText(e.target.value) }}
-                            rows={2} // Number of visible rows
-                            cols={40}
-                        />
-                    </ModalBody>
-                    <ModalFooter className="flex flex-row gap-10">
-                        <button className={BtnActive}
-                            onClick={handleEditQuestion}>
-                            Обновить
-                        </button>
-                        <button className={BtnActive}
-                            onClick={() => { setIsOpenEdit(false) }}>
-                            Отмена
-                        </button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+
         </div >
     )
 }

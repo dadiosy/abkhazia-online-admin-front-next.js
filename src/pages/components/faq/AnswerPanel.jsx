@@ -109,7 +109,7 @@ const AnswerPanel = ({ id, userName, avatar, answer, aDate, feedCount, approve, 
               </p> */}
               <input
                 type="date"
-                className="text-xs md:text-sm xl:text-base font-medium text-[#919494]"
+                className={"text-xs md:text-sm xl:text-base font-medium text-[#919494]" + (approve == 1 ? " bg-green-50" : "")}
                 value={creationDate}
                 onChange={e => { setCreationDate(e.target.value); handleEditAnswer('creationDate', e.target.value); }}
               />
