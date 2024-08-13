@@ -169,7 +169,7 @@ const FaqIndex = () => {
       <div className="flex flex-col container mx-auto max-w-[1440px]  mt-[60px] md:mt-[94px]">
         {loading ? (<div className="flex justify-center" ><TailSpin color="green" radius={"5px"} /></div>) : null}
         <div className="px-4 md:px-[8.333333333%] items-center flex flex-col justify-center">
-          <div className="flex flex-col  justify-center gap-10 my-5">
+          <div className="w-full">
             <div className="flex flex-col gap-5">
               {dataList?.map((v, i) => (
                 <FaqPanel

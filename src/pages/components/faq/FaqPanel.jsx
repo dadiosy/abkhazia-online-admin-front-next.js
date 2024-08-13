@@ -83,7 +83,7 @@ const FaqPanel = ({ id, questionText, creationDate, answers, userName, userAvata
                         autoFocus
                         value={qText}
                         onChange={e => setQText(e.target.value)}
-                        className={"text-base md:text-lg xl:text-xl font-extrabold w-auto" + (approve == 1 ? " bg-green-50" : "")}
+                        className={"text-base md:text-lg xl:text-xl font-extrabold w-auto min-h-[300px]" + (approve == 1 ? " bg-green-50" : "")}
                         onKeyUp={(e) => {
                             if (e.key == 'Escape') setQText("nothing");
                             if (e.key == 'Enter') { handleEditQuestion('questionText'); setQText("nothing"); }
