@@ -28,6 +28,7 @@ const index = () => {
     'title': '',
     'description': '',
     'bgImg': '',
+    'uniqueLink': '',
     'contents': [{
       'question': '',
       'content': '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n'
@@ -77,6 +78,7 @@ const index = () => {
     if (dataDetail.title == "") { toast.error('введите Заголовок'); return; }
     if (dataDetail.description == "") { toast.error('входное Описание'); return; }
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
+    if (dataDetail.uniqueLink == "") { toast.error('Введите уникальную ссылку'); return; }
     if (dataDetail.seos.length == 0) { toast.error('выбирать SEO'); return; }
     if (detailId != 'add') {
       axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/blog/" + detailId,
@@ -176,6 +178,10 @@ const index = () => {
                 <div className="w-full">
                   <Editor value={dataDetail.description} onChange={handleDescriptionChange} style={{ height: 200 }} />
                 </div>
+              </div>
+              <div className="flex flex-row">
+                <div className="my-2 mx-5 w-32 font-bold">URL:</div>
+                <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
               </div>
               <div className="flex flex-row">
                 <div className="my-2 mx-5 w-32 font-bold">Фоновое изображение:</div>

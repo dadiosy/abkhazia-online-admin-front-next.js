@@ -25,8 +25,7 @@ const AttractionIndexPage = () => {
     'description': '',
     'heading': '',
     'bgImg': '',
-    'latitude': '',
-    'longitude': '',
+    'uniqueLink': "",
     'directionID': 0,
     'contents': [{
       'question': '',
@@ -90,6 +89,7 @@ const AttractionIndexPage = () => {
     if (dataDetail.description == "") { toast.error('входное описание'); return; }
     if (dataDetail.bgImg == "") { toast.error('входное Фоновое изображение'); return; }
     if (dataDetail.heading == "") { toast.error('ввод Заключение'); return; }
+    if (dataDetail.uniqueLink == "") { toast.error('Введите уникальную ссылку'); return; }
 
     if (detailId != 'add') {
       axios.put(process.env.NEXT_PUBLIC_API_BASE_URL + "/attraction/" + detailId,
@@ -152,6 +152,10 @@ const AttractionIndexPage = () => {
               <div className="flex flex-row">
                 <div className="my-2 mx-5 w-32 font-bold">Заключение:</div>
                 <input name="heading" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.heading} />
+              </div>
+              <div className="flex flex-row">
+                <div className="my-2 mx-5 w-32 font-bold">URL:</div>
+                <input name="uniqueLink" required onChange={handleTextChange} className={normalInputCss} value={dataDetail.uniqueLink} />
               </div>
               <div className="flex flex-row">
                 <div className="my-2 mx-5 w-32 font-bold leading-3">Фоновое изображение:</div>
