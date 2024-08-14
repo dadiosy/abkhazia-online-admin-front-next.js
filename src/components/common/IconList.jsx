@@ -12,7 +12,7 @@ const IconList = ({ onChange = () => { }, ...props }) => {
         <div className={`${props.className ? props.className : ""}`}>
             <div className="w-[300px] flex flex-wrap gap-[5px] shadow-md rounded-lg p-[8px]">
                 {icons?.map((v, i) => (
-                    <Image key={i} src={`/img/detail-svg/${v}`} width={24} height={24}
+                    <Image key={i} alt="ico" src={`/img/detail-svg/${v}`} width={24} height={24}
                         className="cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-150"
                         onClick={() => { handleClick(`/img/detail-svg/${v}`) }}
                     />

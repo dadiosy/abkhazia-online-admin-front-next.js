@@ -1,5 +1,5 @@
 import { Input, Radio, RadioGroup, Stack } from "@chakra-ui/react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import IconList from "./IconList"
 
 export default function IconTitleEditor({ data = { size: "sm", title: "", icon: "" }, onChange = () => { } }) {
@@ -29,7 +29,7 @@ export default function IconTitleEditor({ data = { size: "sm", title: "", icon: 
                         </RadioGroup>
                     </div>
                     {toggle ?
-                        <IconList className="absolute" onChange={e => onChange({ ...data, icon: e})} /> : null}
+                        <IconList className="absolute" onChange={e => { onChange({ ...data, icon: e }); handleToggle() }} /> : null}
                 </div>
             }
         </>
